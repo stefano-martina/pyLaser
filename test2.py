@@ -2,12 +2,13 @@ import scipy.integrate
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as ani
+from pylab import *
 
 #constants
-G = 6.1e10      #gain coefficient
-k = 1e3    #photon loss rate
-f = 2.2e8     #decadiment rate for spontaneous emission
-p = 100000.     #pump force
+G = 2      #gain coefficient
+k = 100    #photon loss rate
+f = 100     #decadiment rate for spontaneous emission
+p = 10000     #pump force
 
 
 def makeMilonni(G, k, f, p):
@@ -24,18 +25,36 @@ def makeMilonni(G, k, f, p):
 
 fig = plt.figure(figsize=(13, 5));
 plt.subplot(121)
-state0 = [100,100000]
+plt.xlabel('$t$')
+plt.ylabel('$n$')
+
+state0 = [80,80]
 t = np.linspace(0.0, 0.2, 100)
 state = scipy.integrate.odeint(makeMilonni(G, k, f, p), state0, t)
 plt.plot(t,state[:,0])
 
 plt.subplot(122)
+plt.xlabel('$n$')
+plt.ylabel('$N$')
+
 #n = np.linspace(0., 250., 100).tolist()
 #nd = list(map(makeMilonni(G, k, f, p), n))
 
 #plt.plot(n,nd)
 
 plt.plot(state[:,0], state[:,1])
+
+plt.figure(2)
+plt.xlabel('$n$')
+plt.ylabel('$N$')
+
+
+status = np.meshgrid( np.linspace(0,100,20),np.linspace(0,100,20) )
+endStatus = makeMilonni(G, k, f, p)(status)
+#U = endStatus[:,0]
+#V = endStatus[:,1]
+
+quiver(status[0], status[1], endStatus[0], endStatus[1])
 
 plt.show()
 
