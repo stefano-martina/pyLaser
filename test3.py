@@ -102,14 +102,15 @@ fig2 = plt.figure(2)
 
 N0,n = np.meshgrid( np.linspace(0,100,20),np.linspace(0,7,20) )
 U = 0
-V = (G * N0 - k) * n - (a * G) * n * n
+V = makeHaken(N0, G, k, a)(n)
+#V = (G * N0 - k) * n - (a * G) * n * n
+
+quiver( N0,n,U, V)
 
 #Normalize arrows
 #N = np.sqrt(U**2+V**2)  
 #U2, V2 = U/N, V/N
-#ax.quiver( X,Y,U2, V2)
-
-quiver( N0,n,U, V)
+#quiver( N0,n,U2, V2)
 
 
 n0 = 1
