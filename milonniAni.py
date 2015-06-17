@@ -25,7 +25,7 @@ def makeMilonni(G, k, f, p):
     return ode
 
 
-fig = plt.figure(figsize=(13, 10));
+fig = plt.figure(figsize=(13, 5));
 plt.subplots_adjust(wspace=0.3, hspace=0.3)
 
 ax1 = plt.subplot(221, xlim=(0, 0.2), ylim=(0, 90))
