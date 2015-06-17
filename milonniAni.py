@@ -40,7 +40,9 @@ plt.title('Milonni model, evolution of $(n,N)$ from $(80,80)$')
 plt.xlabel('$n$')
 plt.ylabel('$N$')
 
+cumulativeEndStatus = [[],[]];
 line2, = ax2.plot([],[])
+line2b, = ax2.plot([],[], color='red')
 
 ax3 = plt.subplot(223, xlim=(0, 100), ylim=(0, 100))
 plt.title('Vector field')
@@ -62,20 +64,27 @@ pText = ax4.text(0.2, 0.80, '', transform=ax4.transAxes)
 def init():
     line1.set_data([], [])
     line2.set_data([], [])
+    line2b.set_data([], [])
     GText.set_text('')
     kText.set_text('')
     fText.set_text('')
     pText.set_text('')
-    return line1, line2, GText, kText, fText, pText
+    return line1, line2, line2b, GText, kText, fText, pText
 
 def step(G, k, f, pMin, pSteps):
-    def realStep(i, q, status):
+    def realStep(i):#, q, status):
+        if i==0:
+            cumulativeEndStatus[:] = [[],[]]
+    
         state0 = [80,80]
         t = np.linspace(0.0, 0.2, 300)
         state = scipy.integrate.odeint(makeMilonni(G, k, f, pMin+(i*pSteps)), state0, t)
         line1.set_data(t,state[:,0])
+        cumulativeEndStatus[0].append(state[:,0][-1])
+        cumulativeEndStatus[1].append(state[:,1][-1])
 
         line2.set_data(state[:,0], state[:,1])
+        line2b.set_data(cumulativeEndStatus[0], cumulativeEndStatus[1])
 
         endStatus = makeMilonni(G, k, f, pMin+(i*pSteps))(status)
         q.set_UVC(endStatus[0], endStatus[1])
@@ -85,9 +94,9 @@ def step(G, k, f, pMin, pSteps):
         fText.set_text('$f$ = %.1f' % f)
         pText.set_text('$p$ = %d' % (pMin+(i*pSteps)))
 
-        return line1, line2, q, GText, kText, fText, pText
+        return line1, line2, line2b, cumulativeEndStatus, q, GText, kText, fText, pText
     return realStep
 
-anim = ani.FuncAnimation(fig, step(G, k, f, pMin, pSteps), fargs=(q, status), init_func=init, frames=math.ceil((pMax-pMin)/pSteps), interval=10, blit=False)
+anim = ani.FuncAnimation(fig, step(G, k, f, pMin, pSteps), init_func=init, frames=math.ceil((pMax-pMin)/pSteps), interval=10, blit=False) #, fargs=(q, status)
 plt.show()
 
