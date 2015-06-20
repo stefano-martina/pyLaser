@@ -1,9 +1,5 @@
-#from scipy.integrate import odeint
-#from numpy import arange
-#from pylab import plot,xlabel,ylabel,title,legend,show
 import scipy.integrate
 import numpy as np
-#import pylab as plt
 import matplotlib.pyplot as plt
 import matplotlib.animation as ani
 from pylab import *
@@ -16,20 +12,6 @@ a = 10.     #atoms drop to ground rate
 
 def makeHaken(N0, G, k, a):
     return lambda n,t=0.: (G * N0 - k) * n - (a * G) * n * n
-
-'''
-def haken(n, t0=0.):
-    #constants
-    G = 2.      #gain coefficient
-    N0 = 100.  #initial exited atoms
-    k = 100.    #photon loss rate
-    a = 10.     #atoms drop to ground rate
-
-    #calculate
-    nd = (G * N0 - k) * n - (a * G) * n * n
-
-    return nd
-'''
 
 fig = plt.figure(figsize=(13, 5));
 plt.subplots_adjust(wspace=0.3)
@@ -50,12 +32,6 @@ GText = ax2.text(0.70, 0.90, '', transform=ax2.transAxes)
 kText = ax2.text(0.70, 0.85, '', transform=ax2.transAxes)
 aText = ax2.text(0.70, 0.80, '', transform=ax2.transAxes)
 
-#n = np.linspace(0., 10., 100).tolist()
-#zero = list(map(lambda x:0., n))
-#zero = [0] * 100
-#ax2.plot(n,zero)
-
-
 def init1():
     line1.set_data([], [])
     return line1,
@@ -67,7 +43,6 @@ def step1(G, k, a):
         n = scipy.integrate.odeint(makeHaken(N0, G, k, a), n0, t)
 
         line1.set_data(t, n)
-        #print(N0)
         return line1,
     return realStep1
 
@@ -103,15 +78,8 @@ fig2 = plt.figure(2)
 N0,n = np.meshgrid( np.linspace(0,100,20),np.linspace(0,7,20) )
 U = 0
 V = makeHaken(N0, G, k, a)(n)
-#V = (G * N0 - k) * n - (a * G) * n * n
 
 quiver( N0,n,U, V)
-
-#Normalize arrows
-#N = np.sqrt(U**2+V**2)  
-#U2, V2 = U/N, V/N
-#quiver( N0,n,U2, V2)
-
 
 n0 = 1
 N0s = []
@@ -124,37 +92,5 @@ for N0 in np.linspace(0,100,100).tolist():
 
 plt.plot(N0s, ns)
 
-
 plt.show()
-
-
-
-#anim1.save('test1-1.mp4', fps=30)#, extra_args=['-vcodec', 'libx264'])
-#anim2.save('test1-2.mp4', fps=30)
-
-'''
-plt.figure(1, figsize=(13, 5))
-plt.subplots_adjust(wspace=0.3)
-plt.subplot(121)
-plt.plot(t, n)
-plt.xlabel('$t$ (sec)')
-plt.ylabel('$n$ (photons)')
-plt.title('Haken laser model')
-#plt.legend(('$n$ (photons)', '$\dot{n}$ (photons/sec)'))
-#plt.show()
-
-
-n = np.linspace(0., 10., 100).tolist()
-nd = list(map(makeHaken(100), n))
-zero = list(map(lambda x:0, n))
-
-#plt.figure(2)
-plt.subplot(122)
-plt.plot(n, nd)
-plt.plot(n, zero)
-plt.xlabel('$n$')
-plt.ylabel('$\dot{n}$')
-plt.title('Haken $n$ vs $\dot{n}$')
-plt.show()
-'''
     
