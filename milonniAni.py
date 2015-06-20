@@ -77,6 +77,8 @@ plt.figtext(0.68, 0.31, '{', fontsize=40) #size='xx-large')
 plt.figtext(0.7, 0.35, '$\dot{n} = GnN - kn$')
 plt.figtext(0.7, 0.30, '$\dot{N} = -GnN - fN + p$')
 
+plt.draw()
+
 pause = False
 
 def onClick(event):
@@ -125,6 +127,89 @@ def step(G, k, f, pMin, pSteps):
         return line1, line1b, line2, line2b, cumulativeEndStatus, q, GText, kText, fText, pText
     return realStep
 
+
+#biforcazioni
+
+#two fix points stab and instab for n
+stabPointsAn = [[],[]]
+instabPointsAn = [[],[]]
+stabPointsBn = [[],[]]
+instabPointsBn = [[],[]]
+
+#two fix points stab and instab for N
+stabPointsAN = [[],[]]
+instabPointsAN = [[],[]]
+stabPointsBN = [[],[]]
+instabPointsBN = [[],[]]
+
+
+for p in np.linspace(pMin, pMax, 1000):
+    if p > (k*f)/G:
+        instabPointsAn[0].append(0);
+        instabPointsAn[1].append(p);
+
+        instabPointsAN[0].append(p);
+        instabPointsAN[1].append(p/f);
+    else:
+        stabPointsAn[0].append(0);
+        stabPointsAn[1].append(p);
+
+        stabPointsAN[0].append(p);
+        stabPointsAN[1].append(p/f);
+
+    if p > 0 and p < (f*k)/G:
+        instabPointsBn[0].append((p/k)-(f/G));
+        instabPointsBn[1].append(p);
+
+        instabPointsBN[0].append(p);
+        instabPointsBN[1].append(k/G);
+    else:
+        stabPointsBn[0].append((p/k)-(f/G));
+        stabPointsBn[1].append(p);
+
+        stabPointsBN[0].append(p);
+        stabPointsBN[1].append(k/G);
+
+#fixpoints in n
+fig2 = plt.figure(figsize=(13, 7));
+fig2.canvas.set_window_title('Biforcazioni')
+plt.subplots_adjust(wspace=0.3, hspace=0.3)
+
+ax = plt.subplot(211)
+plt.title('fixed points in $n$')
+plt.xlabel('$n$')
+plt.ylabel('$p$')
+
+plot(stabPointsAn[0], stabPointsAn[1], color='green')
+plot(stabPointsBn[0], stabPointsBn[1], color='green')
+plot(instabPointsAn[0], instabPointsAn[1], color='red')
+plot(instabPointsBn[0], instabPointsBn[1], color='red')
+
+ax.annotate('A', xy=(stabPointsAn[0][0], stabPointsAn[1][0]), xytext=(stabPointsAn[0][0] + 3, stabPointsAn[1][0]), arrowprops=dict(facecolor='black', shrink=0.05))
+
+ax.annotate('B', xy=(instabPointsBn[0][0], instabPointsBn[1][0]), xytext=(instabPointsBn[0][0] + 1, instabPointsBn[1][0] + 1500), arrowprops=dict(facecolor='black', shrink=0.05))
+
+#fixpoint in N
+ax = plt.subplot(212)
+plt.title('fixed points in $N$')
+plt.xlabel('$p$')
+plt.ylabel('$N$')
+
+plot(stabPointsAN[0], stabPointsAN[1], color='green')
+plot(stabPointsBN[0], stabPointsBN[1], color='green')
+plot(instabPointsAN[0], instabPointsAN[1], color='red')
+plot(instabPointsBN[0], instabPointsBN[1], color='red')
+
+ax.annotate('A', xy=(stabPointsAN[0][0], stabPointsAN[1][0]), xytext=(stabPointsAN[0][0], stabPointsAN[1][0] + 10), arrowprops=dict(facecolor='black', shrink=0.05))
+
+ax.annotate('B', xy=(instabPointsBN[0][0], instabPointsBN[1][0]), xytext=(instabPointsBN[0][0], instabPointsBN[1][0] + 10), arrowprops=dict(facecolor='black', shrink=0.05))
+
+plt.draw()
+
 anim = ani.FuncAnimation(fig, step(G, k, f, pMin, pSteps), init_func=init, frames=math.ceil((pMax-pMin)/pSteps), interval=10, blit=False) #, fargs=(q, status)
+
 plt.show()
+
+
+
 
