@@ -1,0 +1,73 @@
+
+\documentclass[a4paper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+
+\newcommand{\unicocode}[1]{\texttt{\bfseries #1}}
+\newcommand{\codei}[1]{\unicocode{#1}}
+%  ``\lstinline[language=Python,basicstyle=\small\ttfamily\bfseries,breaklines=true]|#1|''
+
+
+\lstnewenvironment{code}
+{
+  \lstset{language=Python, basicstyle=\small\ttfamily\bfseries,
+    breaklines=true, breakatwhitespace=false, frameround=fttt,
+    frame=trBL, backgroundcolor=\color{yellow!20}}
+}{}
+
+
+\begin{document}
+\section{Descrizione software}
+Il linguaggio usato per lo svolgimento delle simulazioni \`e
+\emph{Python}. I motivi per cui \`e stato scelto tale linguaggio sono:
+\begin{itemize}
+\item la versatilit\`a nello stile di programmazione, che permette di
+  realizzare programmi di diverse dimensioni, funzionalità e stili
+  (funzionale \emph{OOP}, etc\dots),
+\item la folta comunity di sviluppatori mette a disposizione una ricca
+  serie di pacchetti per il calcolo numerico, il disegno di grafi, e
+  in generale tutte le funzioni necessarie per la realizzazione dei
+  modelli.
+
+In totale sono stati realizzati tre programmi corrispondenti ai tre
+modelli proposti dal libro:
+\begin{description}
+\item[haken.py] implementa il modello più semplice di \emph{Haken},
+\item[milonni.py] implementa il modello di \emph{Milonni} e
+  \emph{Eberly},
+\item[maxwell.py] implementa il modello dato dalle equazioni di
+  \emph{Maxwell-Bloch}.
+\end{description}
+
+\end{itemize}
+\subsection{haken.py}
+La prima parte \`e l'\emph{import} dei pacchetti e la definizione
+delle \emph{costanti} usate nel modello.
+\begin{code}
+import scipy.integrate
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as ani
+from pylab import *
+
+#constants
+G = 2.      #gain coefficient
+k = 100.    #photon loss rate
+a = 10.     #atoms drop to ground rate
+\end{code}
+
+Dopo c'è la definizione dell'equazione differenziale che identifica il
+modello di Haken, questa è costituita da una funzione
+\codei{makeHaken} che accetta come parametri dei valori e ritorna una
+funzione (definita con la lambda notazione) in \codei{n} e \codei{t}
+che \`e:
+$$
+\dot{n} = 
+$$
+
+\end{document}
