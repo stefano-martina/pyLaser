@@ -1,5 +1,6 @@
 #import numpy as np
 #import matplotlib.pyplot as plt
+#import sys
 import scipy.integrate
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.animation as ani
@@ -7,17 +8,17 @@ from pylab import *
 
 #constants
 k = 10    #decay rate in laser cavity (beam trasmission) (>0)
-g1 = 1000   #decay rates of atomic polarization (>0)
-g2 = 1000   #decay rates for population inversion (>0)
+g1 = 10   #decay rates of atomic polarization (>0)
+g2 = 10   #decay rates for population inversion (>0)
 
 lMin = -2  #pumping energy parameter (in R)
 lMax = 1
-lSteps = 0.01
+lStep = 0.01
 lInt = 10
 
 graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
-viewLimit = [[-1, -1, -1],[1, 1, 1]]
-gridNum = 3
+viewLimit = [[-1, -1, -1],[1, 1, 2]]
+gridNum = 4
 
 tMax = 0.5
 integrationSteps = 1000
@@ -58,12 +59,34 @@ plt.figtext(0.7, 0.70, '$\dot{D} = \gamma_2(\lambda+1-D-\lambda EP)$')
 lText = plt.figtext(0.7, 0.65, '')
 
 pause = False
+reverse = False
+l = lMin
 
 def onClick(event):
+#    print('button=%d, x=%d, y=%d, xdata=%f, ydata=%f'%(event.button, event.x, event.y, event.xdata, event.ydata))
+
     global pause
-    pause ^= True
+    global reverse
+    global l
+    if event.key == ' ':
+        pause ^= True
     
-fig.canvas.mpl_connect('button_press_event', onClick)
+    if event.key == 'r':
+        reverse ^= True
+
+    if event.key == '.':
+        if l < lMax:
+            l = l + lStep
+
+    if event.key == ',':
+        if l > lMin:
+            l = l - lStep
+
+    if event.key == 'q':
+        exit()
+
+#fig.canvas.mpl_connect('button_press_event', onClick)
+fig.canvas.mpl_connect('key_press_event', onClick)
 
 def init():
     for i in range(0, len(startPoints)):
@@ -72,16 +95,24 @@ def init():
     lText.set_text('')
     return line, lText
 
-def makeGenerator(lMin, lMax, lSteps):
+def makeGenerator(lMin, lMax, lStep):
     def generator():
-        l = lMin
-        while l < lMax:
+        global l
+        if not reverse:
+            l = lMin
+        else:
+            l = lMax
+            
+        while l <= lMax+lStep and l >= lMin-lStep:
             if not pause:
-                l = l + lSteps
+                if not reverse:
+                    l = l + lStep
+                else:
+                    l = l - lStep
             yield l
     return generator
 
-def step(k, g1, g2, lMin, lSteps):
+def step(k, g1, g2, lMin, lStep):
     def realStep(l):
         t = np.linspace(0.0, tMax, integrationSteps)
         i = 0
@@ -97,7 +128,7 @@ def step(k, g1, g2, lMin, lSteps):
     return realStep
 
 
-anim = ani.FuncAnimation(fig, step(k, g1, g2, lMin, lSteps), frames=makeGenerator(lMin, lMax, lSteps), init_func=init, interval=lInt, blit=False, repeat=True)
+anim = ani.FuncAnimation(fig, step(k, g1, g2, lMin, lStep), frames=makeGenerator(lMin, lMax, lStep), init_func=init, interval=lInt, blit=False, repeat=True)
 
 plt.show()
 
