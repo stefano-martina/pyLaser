@@ -29,9 +29,11 @@ lInt = 10
 
 l = lMin
 
-#graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
-graphLimit = [[-2, -2, -2],[2, 2, 2]]
-viewLimit = [[-2, -2, -2],[2, 2, 2]]
+graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
+viewLimit = [[-1, -1, -1],[1, 1, 2]]
+#graphLimit = [[-2, -2, -2],[2, 2, 2]]
+#viewLimit = [[-10, -10, -10],[10, 10, 10]]
+
 gridNum = 4
 
 tMin = 0.1
@@ -55,6 +57,13 @@ for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
 #P = S[1]
 #D = S[2]
 maxwell = lambda k, g1, g2, l: lambda S, t:[k*(S[1]-S[0]),g1*(S[0]*S[2]-S[1]), g2*(l+1-S[2]-l*S[0]*S[1])]
+
+#jacobian
+#  -k       P       0
+#  g1D    -g1P     g1E
+# -g2lP   -g2lE     g2
+
+maxwellJac = lambda k, g1, g2, l: lambda S, t:[[-k, S[1], 0], [g1*S[2], -g1*S[1], g1*S[0]], [-g2*l*S[1], -g2*l*S[0], g2]]
 
 fig = plt.figure(figsize=(13, 7));
 ax = fig.gca(projection='3d')
@@ -181,7 +190,7 @@ def step(l):
     ts = np.linspace(0.0, t, integrationSteps)
     i = 0
     for sp in startPoints:
-        state = scipy.integrate.odeint(maxwell(k, g1, g2, l), sp, ts)
+        state = scipy.integrate.odeint(maxwell(k, g1, g2, l), sp, ts, Dfun=maxwellJac(k, g1, g2, l))#, mxstep=1000)
         
         line[i].set_data(state[:,0],state[:,1])
         line[i].set_3d_properties(state[:,2])
