@@ -1,14 +1,25 @@
-#import numpy as np
-#import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.pyplot as plt
 #import sys
 import scipy.integrate
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.animation as ani
-from pylab import *
+#from pylab import *
 
 #constants
+kMin = 1
+kMax = 1000
+kStep = 1
 k = 10    #decay rate in laser cavity (beam trasmission) (>0)
+
+g1Min = 1
+g1Max = 1000
+g1Step = 10
 g1 = 10   #decay rates of atomic polarization (>0)
+
+g2Min = 1
+g2Max = 1000
+g2Step = 10
 g2 = 10   #decay rates for population inversion (>0)
 
 lMin = -2  #pumping energy parameter (in R)
@@ -16,11 +27,17 @@ lMax = 1
 lStep = 0.01
 lInt = 10
 
-graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
-viewLimit = [[-1, -1, -1],[1, 1, 2]]
+l = lMin
+
+#graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
+graphLimit = [[-2, -2, -2],[2, 2, 2]]
+viewLimit = [[-2, -2, -2],[2, 2, 2]]
 gridNum = 4
 
-tMax = 0.5
+tMin = 0.1
+tMax = 10
+tStep = 0.1
+t = 1  #integration time
 integrationSteps = 1000
 
 startPoints = []
@@ -29,6 +46,7 @@ for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
         for z in np.linspace(graphLimit[0][2], graphLimit[1][2], gridNum):
             startPoints.append([x,y,z])
 
+            
 #Ed = k(P-E)
 #Pd = g1(ED-P)
 #Dd = g2(l+1-D-lEP)
@@ -56,31 +74,70 @@ for i in range(0, len(startPoints)):
 plt.figtext(0.7, 0.80, '$\dot{E} = \kappa(P-E)$')
 plt.figtext(0.7, 0.75, '$\dot{P} = \gamma_1(ED-P)$')
 plt.figtext(0.7, 0.70, '$\dot{D} = \gamma_2(\lambda+1-D-\lambda EP)$')
-lText = plt.figtext(0.7, 0.65, '')
+kText = plt.figtext(0.7, 0.65, '')
+g1Text = plt.figtext(0.7, 0.60, '')
+g2Text = plt.figtext(0.7, 0.55, '')
+lText = plt.figtext(0.7, 0.50, '')
+tText = plt.figtext(0.7, 0.45, '')
 
 pause = False
 reverse = False
-l = lMin
 
 def onClick(event):
 #    print('button=%d, x=%d, y=%d, xdata=%f, ydata=%f'%(event.button, event.x, event.y, event.xdata, event.ydata))
 
     global pause
     global reverse
+    global k
+    global g1
+    global g2
     global l
+    global t
     if event.key == ' ':
         pause ^= True
     
     if event.key == 'r':
         reverse ^= True
 
+    if event.key == '9':
+        if k < kMax:
+            k = min(k + kStep, kMax)
+
+    if event.key == '8':
+        if k > kMin:
+            k = max(k - kStep, kMin)
+
+    if event.key == 'o':
+        if g1 < g1Max:
+            g1 = min(g1 + g1Step, g1Max)
+
+    if event.key == 'i':
+        if g1 > g1Min:
+            g1 = max(g1 - g1Step, g1Min)
+
+    if event.key == 'l':
+        if g2 < g2Max:
+            g2 = min(g2 + g2Step, g2Max)
+
+    if event.key == 'k':
+        if g2 > g2Min:
+            g2 = max(g2 - g2Step, g2Min)
+
     if event.key == '.':
         if l < lMax:
-            l = l + lStep
+            l = min(l + lStep, lMax)
 
     if event.key == ',':
         if l > lMin:
-            l = l - lStep
+            l = max(l - lStep, lMin)
+
+    if event.key == 'm':
+        if t < tMax:
+            t = min(t + tStep, tMax)
+
+    if event.key == 'n':
+        if t > tMin:
+            t = max(t - tStep, tMin)
 
     if event.key == 'q':
         exit()
@@ -92,8 +149,12 @@ def init():
     for i in range(0, len(startPoints)):
         line[i].set_data([], [])
         line[i].set_3d_properties([])
+    kText.set_text('')
+    g1Text.set_text('')
+    g2Text.set_text('')
     lText.set_text('')
-    return line, lText
+    tText.set_text('')
+    return line, kText, g1Text, g2Text, lText
 
 def makeGenerator(lMin, lMax, lStep):
     def generator():
@@ -112,23 +173,29 @@ def makeGenerator(lMin, lMax, lStep):
             yield l
     return generator
 
-def step(k, g1, g2, lMin, lStep):
-    def realStep(l):
-        t = np.linspace(0.0, tMax, integrationSteps)
-        i = 0
-        for sp in startPoints:
-            state = scipy.integrate.odeint(maxwell(k, g1, g2, l), sp, t)
+def step(l):
+    global k
+    global g1
+    global g2
+    global t
+    ts = np.linspace(0.0, t, integrationSteps)
+    i = 0
+    for sp in startPoints:
+        state = scipy.integrate.odeint(maxwell(k, g1, g2, l), sp, ts)
+        
+        line[i].set_data(state[:,0],state[:,1])
+        line[i].set_3d_properties(state[:,2])
+        i = i + 1
             
-            line[i].set_data(state[:,0],state[:,1])
-            line[i].set_3d_properties(state[:,2])
-            i = i + 1
-            
-        lText.set_text('$\lambda$ = %.2f' % l)
-        return line, lText
-    return realStep
+    kText.set_text('$\kappa$ = %d' % k)
+    g1Text.set_text('$\gamma_1$ = %d' % g1)
+    g2Text.set_text('$\gamma_2$ = %d' % g2)
+    lText.set_text('$\lambda$ = %.2f' % l)
+    tText.set_text('$t$ = %.2f' % t)
+    return line, kText, g1Text, g2Text, lText, tText
 
 
-anim = ani.FuncAnimation(fig, step(k, g1, g2, lMin, lStep), frames=makeGenerator(lMin, lMax, lStep), init_func=init, interval=lInt, blit=False, repeat=True)
+anim = ani.FuncAnimation(fig, step, frames=makeGenerator(lMin, lMax, lStep), init_func=init, interval=lInt, blit=False, repeat=True)
 
 plt.show()
 
