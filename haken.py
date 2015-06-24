@@ -61,9 +61,9 @@ def step2(G, k, a):
 
         line2.set_data(n, nd)
 
-        N0Text.set_text('N0 = %d' % N0)
-        GText.set_text('G = %.1f' % G)
-        kText.set_text('k = %.1f' % k)
+        N0Text.set_text('$N_0$ = %d' % N0)
+        GText.set_text('$G$ = %.1f' % G)
+        kText.set_text('$k$ = %.1f' % k)
         aText.set_text('$\\alpha$ = %d' % a)
         return line2, N0Text, GText, kText, aText
     return realStep2
@@ -74,6 +74,9 @@ anim2 = ani.FuncAnimation(fig, step2(G, k, a), init_func=init2, frames=100, inte
 
 
 fig2 = plt.figure(2)
+plt.xlabel('$N_0$')
+plt.ylabel('$n$')
+plt.title('Haken bifurcation')
 
 N0,n = np.meshgrid( np.linspace(0,100,20),np.linspace(0,7,20) )
 U = 0

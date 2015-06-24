@@ -9,7 +9,7 @@ G = 2      #gain coefficient
 k = 100    #photon loss rate
 f = 100     #decadiment rate for spontaneous emission
 
-pMin = 1000  #pump force
+pMin = 0  #pump force
 pMax = 12000
 pSteps = 100
 
