@@ -1,0 +1,277 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of
+                                % "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or epsÂ§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+\usepackage[latin1]{inputenc}
+     \usepackage{amsmath}	
+     \usepackage[italian]{babel}
+     \usepackage{geometry}
+     \usepackage{amsthm}
+     \usepackage{mathtools}
+     \usepackage{amsfonts}
+     \usepackage{braket}
+     \usepackage{wasysym} 
+     \usepackage{graphicx}
+     \usepackage[normal]{subfigure}
+     \usepackage[footnotesize,bf]{caption2}
+     \usepackage{biblatex}
+               \geometry{a4paper,top=4.5cm,bottom=3.5cm,left=3cm,right=3cm}   
+
+\title{La dinamica del Laser}
+\author{Granchi Nicoletta e Martina Stefano}
+
+\newcommand{\positioning}{h}
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+\section{Introduzione}
+In questo elaborato sono esposti tre modelli che descrivono la dinamica di un laser a stato solido; il modello classico, il modello Millonni Eberly e infine il modello con equazioni di Maxwell Bloch. Per ciascuno dei tre modelli è riportato il confronto tra soluzione analitica e soluzione numerica. Alla base dell'interesse per questo sistema fisico stanno il concetto di autoregolazione, che incorre ogni qualvolta si crei spontaneamente ordine, e il concetto di luce caotica: è infatti possibile, sotto precise condizioni, ottenere un'analogia tra il sistema di Lorenz per il moto convettivo di un fluido e il sistema laser.
+\section{Laser a stato solido}
+Il laser a stato solido è una tipologia di laser che ha come mezzo attivo un cristallo, e consiste in un insieme di atomi impiantati in una matrice di stato solido delimitata da specchi parzialmente riflettenti da entrambi i lati. Gli atomi nel reticolo periodico emettono se eccitati da una fonte esterna, dunque ognuno si comporta come un'antenna che emette luce. Quando il pompaggio esterno è relativamente debole gli atomi eccitati oscillano indipendentemente l'uno dall'altro ed emettono onde di luce di fase random, mentre aumentando la forza di pompaggio, una volta superata una certa soglia, gli atomi iniziano ad oscillare in fase e si ottiene l'emissione laser. I fotoni prodotti rimbalzano tra i due specchi alle estremità del mezzo attivo, causando ulteriore emissione stimolata, amplificando così il fascio in uscita.  Al variare delle condizioni si può quindi passare da un sistema macroscopicamente disordinato ad uno ordinato e autoregolato, che emette in modo coerente. 
+\subsection{Modello classico}
+In questo modello semplificato, in cui non si tiene conto della meccanica quantistica, la variabile dinamica è unica ed è il numero $n(t)$ di fotoni prodotti nel laser. La variazione nel tempo di $n(t)$ è data dall'equazione
+\begin{equation}
+\dot{n}=GnN-kn
+\end{equation}
+dove $G>0$ è il parametro di guadagno derivante dal processo di emissione stimolata, $N(t)$ è il numero di atomi eccitati, e k è il rate di decadimento dei fotoni dovuto a fenomeni di trasmissione, scattering ecc..: più fotoni ci sono e più è probabile che riescano ad uscire dal mezzo attivo. L'idea chiave di questo modello è supporre che in assenza di fotoni il numero di atomi eccitati sia $N=N_{0}$ per effetto del pompaggio, e considerare che all'aumentare del numero di fotoni $N$ diventa sempre più minore di $N_{0}$, perché gli atomi emettono diseccitandosi e passando così ad un livello di energia inferiore. Questa diminuzione di N è espressa dall'equazione algebrica
+\begin{equation}
+N(t)=N_{0}-\alpha n 
+\end{equation}
+dove $\alpha>0$  è il rate con il quale gli atomi ricadono nel loro stato fondamentale. Ci si riconduce così ad un sistema del primo ordine in $n(t)$:
+\begin{equation}
+\dot{n}=(GN_{0}-k)n-(\alpha G)n^{2}
+\end{equation}
+I punti fissi del sistema, che si ottengono imponendo $\dot{n}=0$, sono $n_{1}=0$ e $n_{2}=\frac{(GN_{0}-k)}{\alpha G}$. Si riconosce in (3) la forma normale di una cosiddetta \textit{biforcazione transcritica}, nel cui ambito la stabilità dei punti fissi varia in funzione di un parametro. Nel nostro caso il parametro in questione è la forza della pompa $N_{0}=\frac{k}{G}$. E' stata realizzata una simulazione..
+Considerando solo i valori di interesse fisico $n(t)>0$, si riportano i 3 plot di $\dot{n}$ in funzione di $n$:
+
+E' evidente che per questo modello $N_{0}=\frac{k}{G}$ può essere
+interpreato come la soglia di attivazione del laser: il grafico di
+$n(t)$ in funzione di $N_{0}$ mostra infatti che per
+$N_{0}>\frac{k}{G}$ l'origine perde stabilità e appare il punto fisso
+stabile $n_{2}=\frac{(GN_{0}-k)}{\alpha G}$ corrispondente ad
+un'azione laser spontanea. 
+
+Per questo modello è stato realizzato lo script in \emph{Python}
+\emph{haken.py} con lo scopo di visualizzare la biforcazione.
+\begin{figure}[\positioning]
+  \centering
+  \includegraphics[width=\textwidth]{haken_1.pdf}
+  \includegraphics[width=\textwidth]{haken_2.pdf}
+  \includegraphics[width=\textwidth]{haken_3.pdf}
+  \caption{Modello di Haken, dinamica}
+  \label{fig:haken1}
+\end{figure}
+
+In figura \ref{fig:haken1} \`e possibile vedere tre frames
+dell'animazione che mostra il verificarsi della biforcazione al
+variare del parametro $N_0$. Nel plot di sinistra viene mostrato
+l'evoluzione del sistema nel tempo a partire da $n=1$, ottenuto integrando l'equazione
+differenziale. Nel plot di destra viene mostrato il plot di $n$ vs
+$\dot{n}$. Al crescere della forza della pompa $N_0$ inizialmente vi è
+solo il punto fisso stabile $n_1=0$, raggiunta la soglia critica
+$N_0=k/G=50$ si osserva la creazione del punto fisso a $n_2=(G N_0 -
+k)/(\alpha G)$.
+
+\begin{figure}[\positioning]
+  \centering
+  \includegraphics[width=\textwidth]{haken_bif.pdf}
+  \caption{Modello di Haken, biforcazione}
+  \label{fig:hakenb}
+\end{figure}
+In figura \ref{fig:hakenb} \`e possibile vedere il campo vettoriale
+dato dalla dinamica del sistema per diversi valori di $n$ ed $N_0$. La
+curva blu \`e ottenuta plottando l'ultimo valore dell'integrazione del
+sistema partendo da $n=1$ per valori di $N_0$ crescenti, tale curva
+mostra quindi la biforcazione e la variazione della stabilit\`a dei
+punti fissi al crescere di $N_0$.
+\subsection{Modello di Milonni Eberly}
+Si tratta di un modello in cui viene presa in considerazione la variazione temporale non solo del numero di fotoni nel laser, ma anche quella del numero di atomi eccitati N, e quindi si introduce, rispetto al modello precedente, il fenomeno dell'\textit{emissione spontanea}: il sistema relativo a questo modello è quindi
+\begin{equation}
+\dot{n}=GnN-kn
+\end{equation}
+\begin{equation}
+\dot{N}=-GnN-fN+p
+\end{equation}
+dove $f$ è il rate di decadimento per emissione spontanea e $p$ è la forza di pompaggio. Più fotoni sono emessi dagli atomi, più gli atomi eccitati diminuiscono proporzionalmente al coefficiente di guadagno G; mentre $p$ fa aumentare $N$, il processo di emissione spontanea contribuisce a diminuirlo; tale processo è responsabile dell'accoppiamento delle due equazioni differenziali (4) e (5). Non ci sono metodi sistematici per risolvere esattamente equazioni differenziali non lineari, ci sono però dei casi limite ben noti, molti dei quali con soluzioni conosciute. Riportiamo una soluzione analitica del problema ricondotto ad uno di questi casi limite, e successivamente l'analisi numerica del sistema generale in assenza di approssimazioni.
+\subsubsection{Soluzione Analitica}
+Consideriamo il limite in cui il rate di produzione di atomi eccitati sia più "lento" della produzione dei fotoni laser, ovvero supponiamo che i fotoni rimangano nel sistema per un tempo maggiore di quello in cui gli atomi siano eccitati. Questa ipotesi è espressa dalla condizione $k/f<<1$, e permette di dire che $\dot{N}\approx 0$. Questa eliminazione, detta \textit{adiabatica}, esprime il concetto fisico secondo cui gli atomi non restano eccitati sufficientemente a lungo per essere contati rispetto al numero di fotoni che producono. L'equazione (5) diventa così:
+\begin{equation}
+-NGn-f+p=0
+\end{equation}
+da cui si ottiene
+\begin{displaymath}
+N=\frac{p}{Gn+f}.
+\end{displaymath}
+Il sistema precedente è quindi ricondotto ad un sistema del primo ordine
+\begin{equation}
+\begin{cases}
+\dot{n}=n\left(\frac{Gp}{Gn+f}-k\right)\ 
+\\
+N=\frac{p}{Gn+f}
+\end{cases}
+\end{equation}
+per il quale è semplice calcolare i punti fissi imponendo 
+\begin{displaymath}
+\dot{n}=0
+\end{displaymath}
+\begin{equation}
+n\left(\frac{Gp}{Gn+f}-k\right)=0.
+\end{equation}
+I punti fissi del sistema sono:
+\begin{displaymath}
+n_{1}=\left(0,\frac{p}{f}\right)
+\end{displaymath}
+\begin{displaymath}
+n_{2}=\left(\frac{p}{k}-\frac{f}{G},\frac{k}{G}\right)
+\end{displaymath}
+Per lo studio della stabilità calcoliamo la derivata prima rispetto a $n$ della funzione $F(n)=\dot{n}$ nei punti fissi trovato
+\begin{displaymath}
+F'(n)= \frac{Gpf}{(Gn+f)^2}-k
+\end{displaymath}
+e si trova che $n_{1}$ è un punto fisso \textit{stabile}, e quindi è un \textit{attrattore} per 
+\begin{displaymath}
+p<\frac{kf}{G}
+\end{displaymath}
+e $n_{2}$ è un punto fisso \textit{instabile} per 
+\begin{displaymath}
+0<p<\frac{fk}{G}.
+\end{displaymath}
+\subsubsection{Soluzione numerica}
+Il linguaggio usato per lo svolgimento delle simulazioni \`e
+\emph{Python}. I motivi per cui \`e stato scelto tale linguaggio sono:
+\begin{itemize}
+\item la versatilit\`a nello stile di programmazione, che permette di
+  realizzare programmi di diverse dimensioni, funzionalità e stili
+  (funzionale \emph{OOP}, etc\dots),
+\item la folta comunity di sviluppatori mette a disposizione una ricca
+  serie di pacchetti per il calcolo numerico, il disegno di grafici, e
+  in generale tutte le funzioni necessarie per la realizzazione dei
+  modelli.
+\end{itemize}
+
+  Per l'analisi del modello di Milonni Eberly \`e stato realizzato lo
+  script \emph{milonni.py} che mostra due finestre.
+
+  Nella prima \`e
+  visibile un'animazione con l'evoluzione del modello al crescere
+  della potenza della pompa $p$, per una traccia nelle due
+  variabili $n$ ed $N$ nel tempo e nel piano combinato di $n$ ed
+  $N$. Inoltre viene anche visualizzato il campo vettoriale indotto
+  dal sistema. nella figura \ref{fig:milonni} \`e possibile vedere tre
+  fotogrammi
+  dell'animazione.
+  \begin{figure}[\positioning]
+    \centering
+    \includegraphics[width=0.8\textwidth]{milonni_1.pdf}
+    \includegraphics[width=0.8\textwidth]{milonni_2.pdf}
+    \includegraphics[width=0.8\textwidth]{milonni_3.pdf}
+    \caption{Modello Milonni, dinamica}
+    \label{fig:milonni}
+  \end{figure}
+
+  nella seconda finestra \`e illustrata la biforcazione transcritica
+  che avviene nei due punti fissi cos\`i come visibile in figura
+  \ref{fig:milonnib}.
+  \begin{figure}[\positioning]
+    \centering
+    \includegraphics[width=\textwidth]{milonni_bif.pdf}
+    \caption{Modello Milonni, biforcazione}
+    \label{fig:milonnib}
+  \end{figure}
+  I due punti fissi sono etichettati con $A$ e $B$, e i due grafici
+  mostrano, al variare della potenza della pompa $p$, la stabilit\`a
+  del punto fisso: verde stabile, rosso instabile. Notare che nei
+  due grafici $p$ \`e rappresentato nelle ascisse in quello inferiore
+  e nelle ordinate nel superiore\footnote{per meglio mantenere la
+    relazione visiva tra i due punti fissi}.
+
+  Per la realizzazione dei plot della prima finestra viene integrato
+  il sistema di equazioni differenziali, senza fare l'eliminazione
+  adiabatica, per un certo tempo. Il tempo di integrazione \`e
+  sufficiente poich\'e sia $n$ che $N$ raggiungono lo steady
+  state\footnote{si nota nei due plot $n$ vs $t$ e $N$ vs $t$}. Per la
+  realizzazione della seconda finestra vengono usate le condizioni
+  trovate analiticamente usando l'eliminazione adiabatica.
+
+  Nei limiti visualizzati il sistema ha un solo punto fisso stabile
+  per ogni valore di $p$, in figura \ref{fig:milonnib} si può vedere
+  che per $p<5000$ è stabile solo $A$ e per $p>5000$ solo $B$. In
+  realtà portando la pompa a valori 
+  negativi si può osservare più di un punto fisso stabile per certi
+  valori di $p$, ma questi punti fissi hanno valori di $n$ e $N$
+  negativi e quindi non hanno senso fisicamente\footnote{$n$ \`e il
+    numero di fotoni nel sistema, $N$ il numero di atomi eccitati}.
+\subsection{Modello con Equazioni di Maxwell Bloch}
+Le equazioni di Maxwell Bloch descrivono la dinamica di un sistema quantistico a due stati interagente con il modo elettromagnetico di un risonatore ottico; sono analoghe, ma non tutte equivalenti, alle equazioni di Bloch che descrivono il momento magnetico nucleare in un campo elettromagnetico. Si tratta di un sistema di tre equazioni al primo ordine per il campo elettrico in un modo di singola cavità longitudinale, ricavato a partire dalle equazioni di Maxwell usando approssimazioni semiclassiche per variabili quantistiche. La non linearità deriva dal fatto che il sistema oscilla tra almeno due stati discreti di energia. Le equazioni sono risolte per la \textit{densità di inversione di popolazione} $D(t)$ e per la \textit{densità media di polarizzazione} $P(t)$, indotta dal campo elettrico $E(t)$:
+\begin{equation}
+\begin{cases}
+\dot{E}=k(P-E)
+\\
+\dot{P}=\gamma_{1}(ED-P)
+\\
+\dot{D}=\gamma_{2}(f+1-D-fEP)
+
+\end{cases}
+\end{equation}
+dove $k$ è il rate di decadimento nella cavità laser per i fenomeni di trasmissione, scattering ecc.., $\gamma_{1}$ e $\gamma_{2}$ sono i rate di decadimento rispettivamente per la polarizzazione atomica e per l'inversione di popolazione, e $f$ è il parametro di pompaggio, che può essere positivo e negativo.
+L'interesse nello studio di questo sistema, per il quale sono stati infatti osservati sperimentalmente comportamenti caotici, è sia sperimentale che teorico: le equazioni di Maxwell Bloch sono analoghe alle equazioni di Lorenz e possono esibire attrattori strani. Il sistema di Lorenz infatti, che descrive i moti convettivi di un fluido, può essere ricondotto al sistema (9) tramite opportune sostituzioni; entrambi i sistemi esprimono almeno due instabilità che sono state trovate indipendentemente nella dinamica dei fluidi e in quella del laser. C'è una corrispondenza tra l'assenza di azione laser e il fluido a riposo, e tra l'attivazione laser e i moti convettivi del fluido. Oltre a questa instabilità se ne ha un'altra sotto le condizioni: 
+\begin{equation}
+k>\gamma_{1}+\gamma_{2}
+\end{equation}
+\begin{equation}
+f>\frac{(\gamma_{1}+\gamma_{2}+k)(\gamma_{1}+k)}{\gamma_{1}(k-\gamma_{1}-\gamma_{2})}
+\end{equation}
+Analisi numeriche precedenti hanno mostrato che nei laser il pompaggio deve essere molto elevato per soddisfare la condizione (11); quindi, dopo che è stata dimostrata la possibilità di ottenere luce laser \textit{caotica}, sono stati ricercati altri meccanismi per realizzarla con una potenza di pompa minore. Prima di presentare la nostra trattazione numerica, proponiamo una soluzione analitica del sistema compatibile con la possibilità di produrre luce laser caotica per mezzo di un effetto di modulazione.
+\subsubsection{Soluzione analitica}
+Assumendo che $\gamma_{1},\gamma_{2}>>k$, si elimina adiabaticamente $\dot{P}$ e $\dot{D}$ il sistema diventa:
+\begin{equation}
+\begin{cases}
+\dot{E}=k(P-E)
+\\
+\gamma_{1}(ED-P)=0
+\\
+\gamma_{2}(f+1-D-fEP)=0
+
+\end{cases}
+\end{equation}
+Esprimendo $P$ e $D$ in funzione di $E$ si ottiene:
+\begin{equation}
+\begin{cases}
+\dot{E}=kE\left(\frac{f+1}{fE^2+1}-1\right)
+\\
+P=E\left(\frac{f+1}{fE^2+1}\right)
+\\
+D=\frac{f+1}{fE^2+1}
+\end{cases}
+\end{equation}
+La funzione $\dot{E}$ si annulla nei seguenti punti:
+\begin{displaymath}
+(E_{1},P_{1},D_{1})=(0,0,0)
+\end{displaymath}
+\begin{displaymath}
+(E_{2},P_{2},D_{2})=(1,1,1)
+\end{displaymath}
+\begin{displaymath}
+(E_{3},P_{3},D_{3})=(-1,1,-1)
+\end{displaymath}
+Si osservi che gli ultimi due punti non possono essere punti fissi per $f<0$ in quanto la funzione $\dot{E}$ non è definita in essi . Studiando il segno della derivata prima rispetto ad E funzione $F(E)=\dot{E}$ si hanno i seguenti risultati:
+\begin{displaymath}
+F'(E)=\frac{k(f+1)(fE^2+1)-kE(f+1)(2fE)}{(fE^2+1)^2}-k
+\end{displaymath}
+\begin{itemize}
+\item $(E_{1},P_{1},D_{1})=(0,0,0)$ è un punto fisso stabile per $f<0$;
+\item $(E_{2},P_{2},D_{2})=(1,1,1)$ è un punto fisso solo per $f>0$, dove è stabile;
+\item $(E_{3},P_{3},D_{3})=(-1,1,-1)$ è un punto fisso solo per $f>0$, dove è stabile.
+\end{itemize}
+Dunque il sistema per $f$ negativi ha un attrattore nell'origine e due asintoti in  $(E_{2},P_{2},D_{2})=(1,1,1)$ e $(E_{3},P_{3},D_{3})=(-1,1,-1)$, mentre per f positivi ha un punto fisso instabile nell'origine e due attrattori in $(E_{2},P_{2},D_{2})=(1,1,1)$ e $(E_{3},P_{3},D_{3})=(-1,1,-1)$.
+\subsubsection{Soluzione Numerica}
+\section{Conclusioni}
+
+\end{document}  
