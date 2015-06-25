@@ -208,7 +208,7 @@ ax.annotate('B', xy=(instabPointsBN[0][0], instabPointsBN[1][0]), xytext=(instab
 
 plt.draw()
 
-anim = ani.FuncAnimation(fig, step(G, k, f, pMin, pSteps), init_func=init, frames=math.ceil((pMax-pMin)/pSteps), interval=10, blit=False) #, fargs=(q, status)
+anim = ani.FuncAnimation(fig, step(G, k, f, pMin, pSteps), init_func=init, frames=math.ceil((pMax-pMin)/pSteps), blit=False) #, interval=10, fargs=(q, status)
 
 plt.show()
 

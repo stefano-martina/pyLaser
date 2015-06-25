@@ -208,7 +208,7 @@ def step(l):
     return line, kText, g1Text, g2Text, lText, tText
 
 
-anim = ani.FuncAnimation(fig, step, frames=makeGenerator(lMin, lMax, lStep), init_func=init, interval=lInt, blit=False, repeat=True)
+anim = ani.FuncAnimation(fig, step, frames=makeGenerator(lMin, lMax, lStep), init_func=init, blit=False, repeat=True) #, interval=lInt
 
 plt.show()
 
