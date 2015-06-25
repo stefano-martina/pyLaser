@@ -32,13 +32,13 @@ lInt = 10.
 l = lMin
 
 graphLimit = [[0.45, 0.45, 0.45],[0.55, 0.55, 0.55]]
-viewLimit = [[-3, -3, -3],[3, 3, 3]]
+viewLimit = [[-3, -3, -7],[3, 3, 7]]
 #graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
 #viewLimit = [[-2, -2, -2],[2, 2, 2]]
 #graphLimit = [[-2, -2, -2],[2, 2, 2]]
 #viewLimit = [[-10, -10, -10],[10, 10, 10]]
 
-gridNum = 2
+gridNum = 4
 
 tMin = 0.1
 tMax = 100.
@@ -52,28 +52,35 @@ for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
         for z in np.linspace(graphLimit[0][2], graphLimit[1][2], gridNum):
             startPoints.append([x,y,z])
 
-#startPoints = [[0.5,0.5,0.5]]
-            
-#Ed = k(P-E)
-#Pd = g1(ED-P)
-#Dd = g2(l+1-D-lEP)
+startPoints = [[0.5,0.5,0.5]]
+
 
 #E = S[0]
 #P = S[1]
 #D = S[2]
+
+#full system
+#Ed = k(P-E)
+#Pd = g1(ED-P)
+#Dd = g2(l+1-D-lEP)
 maxwell = lambda k, g1, g2, l: lambda S, t:[k*(S[1]-S[0]),g1*(S[0]*S[2]-S[1]), g2*(l+1-S[2]-l*S[0]*S[1])]
 
 #jacobian
 #  -k       P       0
 #  g1D    -g1P     g1E
 # -g2lP   -g2lE     g2
-
 maxwellJac = lambda k, g1, g2, l: lambda S, t:[[-k, S[1], 0], [g1*S[2], -g1*S[1], g1*S[0]], [-g2*l*S[1], -g2*l*S[0], g2]]
+
+#adiabatic elimination system
+#Ed = kE((l+1)/(lE^2+1) -1)
+maxwellAdiabaticEl = lambda k, l: lambda E, t: k*l*(E-E**3)/(l*E*E+1)
+adiabaticP = lambda l: lambda E: E*(l+1)/(l*E*E+1)
+adiabaticD = lambda l: lambda E: (l+1)/(l*E*E+1)
 
 fig = plt.figure(figsize=(13, 7));
 ax = fig.gca(projection='3d')
-fig.canvas.set_window_title('Stability of Maxwell-Bloch')
-ax.set_title('Stability study of Maxwell-Bloch equations in E')
+fig.canvas.set_window_title('Maxwell-Bloch')
+ax.set_title('Study of Maxwell-Bloch equations in E')
 ax.set_xlabel('$E$')
 ax.set_ylabel('$P$')
 ax.set_zlabel('$D$')
@@ -82,8 +89,10 @@ ax.set_ylim(viewLimit[0][1], viewLimit[1][1])
 ax.set_zlim(viewLimit[0][2], viewLimit[1][2])
 
 line = []
+lineA = []
 for i in range(0, len(startPoints)):
     line[len(line):len(line)], = [plt.plot([],[],[])]
+    lineA[len(lineA):len(lineA)], = [plt.plot([],[],[])]
 
 plt.figtext(0.7, 0.80, '$\dot{E} = \kappa(P-E)$')
 plt.figtext(0.7, 0.75, '$\dot{P} = \gamma_1(ED-P)$')
@@ -96,12 +105,14 @@ tText = plt.figtext(0.7, 0.45, '')
 
 pause = True
 reverse = False
+adiabatic = False
 
 def onClick(event):
 #    print('button=%d, x=%d, y=%d, xdata=%f, ydata=%f'%(event.button, event.x, event.y, event.xdata, event.ydata))
 
     global pause
     global reverse
+    global adiabatic
     global k
     global g1
     global g2
@@ -112,6 +123,9 @@ def onClick(event):
     
     if event.key == 'r':
         reverse ^= True
+
+    if event.key == 'a':
+        adiabatic ^= True
 
     if event.key == '9':
         if k < kMax:
@@ -163,6 +177,8 @@ def init():
     for i in range(0, len(startPoints)):
         line[i].set_data([], [])
         line[i].set_3d_properties([])
+        lineA[i].set_data([], [])
+        lineA[i].set_3d_properties([])
     kText.set_text('')
     g1Text.set_text('')
     g2Text.set_text('')
@@ -188,6 +204,7 @@ def makeGenerator(lMin, lMax, lStep):
     return generator
 
 def step(l):
+    global adiabatic
     global k
     global g1
     global g2
@@ -199,6 +216,20 @@ def step(l):
         
         line[i].set_data(state[:,0],state[:,1])
         line[i].set_3d_properties(state[:,2])
+
+        if adiabatic:
+            state = scipy.integrate.odeint(maxwellAdiabaticEl(k, l), sp[0], ts)#, mxstep=1000)
+            Es = state[:,0]
+
+            Ps = list(map(adiabaticP(l), Es))
+            Ds = list(map(adiabaticD(l), Es))
+            lineA[i].set_data(Es,Ps)
+            lineA[i].set_3d_properties(Ds)
+        else:
+            lineA[i].set_data([], [])
+            lineA[i].set_3d_properties([])
+
+        
         i = i + 1
             
     kText.set_text('$\kappa$ = %.2f' % k)
