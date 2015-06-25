@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import scipy.integrate
 import numpy as np
 import matplotlib.pyplot as plt

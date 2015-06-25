@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import scipy.integrate
 import numpy as np
 from mpl_toolkits.mplot3d import axes3d

@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import numpy as np
 import matplotlib.pyplot as plt
 #import sys
@@ -23,12 +25,14 @@ g2Step = 10
 g2 = 10   #decay rates for population inversion (>0)
 
 lMin = -2  #pumping energy parameter (in R)
-lMax = 1
+lMax = 10
 lStep = 0.01
 lInt = 10
 
 l = lMin
 
+#graphLimit = [[0.5, 0.5, 0.5],[0.6, 0.6, 0.6]]
+#viewLimit = [[0, 0, 0],[1.5, 1.5, 2]]
 graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
 viewLimit = [[-1, -1, -1],[1, 1, 2]]
 #graphLimit = [[-2, -2, -2],[2, 2, 2]]
