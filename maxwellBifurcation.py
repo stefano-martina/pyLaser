@@ -9,42 +9,42 @@ import matplotlib.animation as ani
 #from pylab import *
 
 #constants
-kMin = 1
-kMax = 1000
-kStep = 1
-k = 10    #decay rate in laser cavity (beam trasmission) (>0)
+kMin = 1.
+kMax = 1000.
+kStep = 0.1
+k = 5.    #decay rate in laser cavity (beam trasmission) (>0)
 
-g1Min = 1
-g1Max = 1000
-g1Step = 10
-g1 = 10   #decay rates of atomic polarization (>0)
+g1Min = 1.
+g1Max = 1000.
+g1Step = 10.
+g1 = 1.   #decay rates of atomic polarization (>0)
 
-g2Min = 1
-g2Max = 1000
-g2Step = 10
-g2 = 10   #decay rates for population inversion (>0)
+g2Min = 1.
+g2Max = 1000.
+g2Step = 10.
+g2 = 1.   #decay rates for population inversion (>0)
 
-lMin = -2  #pumping energy parameter (in R)
-lMax = 10
+lMin = 11.  #pumping energy parameter (in R)
+lMax = 100.
 lStep = 0.01
-lInt = 10
+lInt = 10.
 
 l = lMin
 
-#graphLimit = [[0.5, 0.5, 0.5],[0.6, 0.6, 0.6]]
-#viewLimit = [[0, 0, 0],[1.5, 1.5, 2]]
-graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
-viewLimit = [[-1, -1, -1],[1, 1, 2]]
+graphLimit = [[0.45, 0.45, 0.45],[0.55, 0.55, 0.55]]
+viewLimit = [[-3, -3, -3],[3, 3, 3]]
+#graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
+#viewLimit = [[-2, -2, -2],[2, 2, 2]]
 #graphLimit = [[-2, -2, -2],[2, 2, 2]]
 #viewLimit = [[-10, -10, -10],[10, 10, 10]]
 
-gridNum = 4
+gridNum = 2
 
 tMin = 0.1
-tMax = 10
+tMax = 100.
 tStep = 0.1
-t = 1  #integration time
-integrationSteps = 1000
+t = 100.  #integration time
+integrationSteps = 10000
 
 startPoints = []
 for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
@@ -52,6 +52,7 @@ for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
         for z in np.linspace(graphLimit[0][2], graphLimit[1][2], gridNum):
             startPoints.append([x,y,z])
 
+#startPoints = [[0.5,0.5,0.5]]
             
 #Ed = k(P-E)
 #Pd = g1(ED-P)
@@ -93,7 +94,7 @@ g2Text = plt.figtext(0.7, 0.55, '')
 lText = plt.figtext(0.7, 0.50, '')
 tText = plt.figtext(0.7, 0.45, '')
 
-pause = False
+pause = True
 reverse = False
 
 def onClick(event):
@@ -200,9 +201,9 @@ def step(l):
         line[i].set_3d_properties(state[:,2])
         i = i + 1
             
-    kText.set_text('$\kappa$ = %d' % k)
-    g1Text.set_text('$\gamma_1$ = %d' % g1)
-    g2Text.set_text('$\gamma_2$ = %d' % g2)
+    kText.set_text('$\kappa$ = %.2f' % k)
+    g1Text.set_text('$\gamma_1$ = %.2f' % g1)
+    g2Text.set_text('$\gamma_2$ = %.2f' % g2)
     lText.set_text('$\lambda$ = %.2f' % l)
     tText.set_text('$t$ = %.2f' % t)
     return line, kText, g1Text, g2Text, lText, tText
