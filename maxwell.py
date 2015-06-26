@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -31,14 +31,16 @@ lInt = 10.
 
 l = lMin
 
-graphLimit = [[0.45, 0.45, 0.45],[0.55, 0.55, 0.55]]
-viewLimit = [[-3, -3, -7],[3, 3, 7]]
+center = 0.5
+radius = 0.0001
+graphLimit = [[center-radius, center-radius, center-radius],[center+radius, center+radius, center+radius]]
+viewLimit = [[-3., -3., -7.],[3., 3., 7.]]
 #graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
 #viewLimit = [[-2, -2, -2],[2, 2, 2]]
 #graphLimit = [[-2, -2, -2],[2, 2, 2]]
 #viewLimit = [[-10, -10, -10],[10, 10, 10]]
 
-gridNum = 4
+gridNum = 2
 
 tMin = 0.1
 tMax = 100.
@@ -46,13 +48,13 @@ tStep = 0.1
 t = 100.  #integration time
 integrationSteps = 10000
 
-startPoints = []
+multipleStartPoints = []
 for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
     for y in np.linspace(graphLimit[0][1], graphLimit[1][1], gridNum):
         for z in np.linspace(graphLimit[0][2], graphLimit[1][2], gridNum):
-            startPoints.append([x,y,z])
+            multipleStartPoints.append([x,y,z])
 
-startPoints = [[0.5,0.5,0.5]]
+singleStartPoint = [center,center,center]
 
 
 #E = S[0]
@@ -90,7 +92,7 @@ ax.set_zlim(viewLimit[0][2], viewLimit[1][2])
 
 line = []
 lineA = []
-for i in range(0, len(startPoints)):
+for i in range(0, len(multipleStartPoints)):
     line[len(line):len(line)], = [plt.plot([],[],[])]
     lineA[len(lineA):len(lineA)], = [plt.plot([],[],[])]
 
@@ -106,6 +108,7 @@ tText = plt.figtext(0.7, 0.45, '')
 pause = True
 reverse = False
 adiabatic = False
+single = True
 
 def onClick(event):
 #    print('button=%d, x=%d, y=%d, xdata=%f, ydata=%f'%(event.button, event.x, event.y, event.xdata, event.ydata))
@@ -113,6 +116,7 @@ def onClick(event):
     global pause
     global reverse
     global adiabatic
+    global single
     global k
     global g1
     global g2
@@ -126,6 +130,9 @@ def onClick(event):
 
     if event.key == 'a':
         adiabatic ^= True
+
+    if event.key == 'z':
+        single ^= True
 
     if event.key == '9':
         if k < kMax:
@@ -174,7 +181,7 @@ def onClick(event):
 fig.canvas.mpl_connect('key_press_event', onClick)
 
 def init():
-    for i in range(0, len(startPoints)):
+    for i in range(0, len(multipleStartPoints)):
         line[i].set_data([], [])
         line[i].set_3d_properties([])
         lineA[i].set_data([], [])
@@ -205,29 +212,65 @@ def makeGenerator(lMin, lMax, lStep):
 
 def step(l):
     global adiabatic
+    global single
     global k
     global g1
     global g2
     global t
     ts = np.linspace(0.0, t, integrationSteps)
     i = 0
-    for sp in startPoints:
-        state = scipy.integrate.odeint(maxwell(k, g1, g2, l), sp, ts, Dfun=maxwellJac(k, g1, g2, l))#, mxstep=1000)
-        
-        line[i].set_data(state[:,0],state[:,1])
-        line[i].set_3d_properties(state[:,2])
+    for sp in multipleStartPoints:
+        if single:
+            if i==0:
+                state = scipy.integrate.odeint(maxwell(k, g1, g2, l), singleStartPoint, ts, Dfun=maxwellJac(k, g1, g2, l))#, mxstep=1000)
+
+                Es = state[:,0]
+                Ps = state[:,1]
+                Ds = state[:,2]
+            else:
+                Es = []
+                Ps = []
+                Ds = []
+            
+        else:    
+            state = scipy.integrate.odeint(maxwell(k, g1, g2, l), sp, ts, Dfun=maxwellJac(k, g1, g2, l))#, mxstep=1000)
+
+            Es = state[:,0]
+            Ps = state[:,1]
+            Ds = state[:,2]
+
+            
+        line[i].set_data(Es,Ps)
+        line[i].set_3d_properties(Ds)
 
         if adiabatic:
-            state = scipy.integrate.odeint(maxwellAdiabaticEl(k, l), sp[0], ts)#, mxstep=1000)
-            Es = state[:,0]
+            if single:
+                if i==0:
+                    state = scipy.integrate.odeint(maxwellAdiabaticEl(k, l), singleStartPoint[0], ts)#, mxstep=1000)
+                    Es = state[:,0]
 
-            Ps = list(map(adiabaticP(l), Es))
-            Ds = list(map(adiabaticD(l), Es))
-            lineA[i].set_data(Es,Ps)
-            lineA[i].set_3d_properties(Ds)
+                    Ps = list(map(adiabaticP(l), Es))
+                    Ds = list(map(adiabaticD(l), Es))
+
+                else:
+                    Es = []
+                    Ps = []
+                    Ds = []
+
+            else:
+                state = scipy.integrate.odeint(maxwellAdiabaticEl(k, l), sp[0], ts)#, mxstep=1000)
+                Es = state[:,0]
+
+                Ps = list(map(adiabaticP(l), Es))
+                Ds = list(map(adiabaticD(l), Es))
+
         else:
-            lineA[i].set_data([], [])
-            lineA[i].set_3d_properties([])
+            Es = []
+            Ps = []
+            Ds = []
+
+        lineA[i].set_data(Es,Ps)
+        lineA[i].set_3d_properties(Ds)
 
         
         i = i + 1
