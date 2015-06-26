@@ -216,17 +216,17 @@ Le equazioni di Maxwell Bloch descrivono la dinamica di un sistema quantistico a
 \\
 \dot{P}=\gamma_{1}(ED-P)
 \\
-\dot{D}=\gamma_{2}(f+1-D-fEP)
+\dot{D}=\gamma_{2}(\lambda+1-D-\lambda EP)
 
 \end{cases}
 \end{equation}
-dove $k$ è il rate di decadimento nella cavità laser per i fenomeni di trasmissione, scattering ecc.., $\gamma_{1}$ e $\gamma_{2}$ sono i rate di decadimento rispettivamente per la polarizzazione atomica e per l'inversione di popolazione, e $f$ è il parametro di pompaggio, che può essere positivo e negativo.
+dove $k$ è il rate di decadimento nella cavità laser per i fenomeni di trasmissione, scattering ecc.., $\gamma_{1}$ e $\gamma_{2}$ sono i rate di decadimento rispettivamente per la polarizzazione atomica e per l'inversione di popolazione, e $\lambda$ è il parametro di pompaggio, che può essere positivo e negativo.
 L'interesse nello studio di questo sistema, per il quale sono stati infatti osservati sperimentalmente comportamenti caotici, è sia sperimentale che teorico: le equazioni di Maxwell Bloch sono analoghe alle equazioni di Lorenz e possono esibire attrattori strani. Il sistema di Lorenz infatti, che descrive i moti convettivi di un fluido, può essere ricondotto al sistema (9) tramite opportune sostituzioni; entrambi i sistemi esprimono almeno due instabilità che sono state trovate indipendentemente nella dinamica dei fluidi e in quella del laser. C'è una corrispondenza tra l'assenza di azione laser e il fluido a riposo, e tra l'attivazione laser e i moti convettivi del fluido. Oltre a questa instabilità se ne ha un'altra sotto le condizioni: 
 \begin{equation}
 k>\gamma_{1}+\gamma_{2}
 \end{equation}
 \begin{equation}
-f>\frac{(\gamma_{1}+\gamma_{2}+k)(\gamma_{1}+k)}{\gamma_{1}(k-\gamma_{1}-\gamma_{2})}
+\lambda>\frac{(\gamma_{1}+\gamma_{2}+k)(\gamma_{1}+k)}{\gamma_{1}(k-\gamma_{1}-\gamma_{2})}
 \end{equation}
 Analisi numeriche precedenti hanno mostrato che nei laser il pompaggio deve essere molto elevato per soddisfare la condizione (11); quindi, dopo che è stata dimostrata la possibilità di ottenere luce laser \textit{caotica}, sono stati ricercati altri meccanismi per realizzarla con una potenza di pompa minore. Prima di presentare la nostra trattazione numerica, proponiamo una soluzione analitica del sistema compatibile con la possibilità di produrre luce laser caotica per mezzo di un effetto di modulazione.
 \subsubsection{Soluzione analitica}
@@ -237,18 +237,18 @@ Assumendo che $\gamma_{1},\gamma_{2}>>k$, si elimina adiabaticamente $\dot{P}$ e
 \\
 \gamma_{1}(ED-P)=0
 \\
-\gamma_{2}(f+1-D-fEP)=0
+\gamma_{2}(\lambda+1-D-\lambda EP)=0
 
 \end{cases}
 \end{equation}
 Esprimendo $P$ e $D$ in funzione di $E$ si ottiene:
 \begin{equation}
 \begin{cases}
-\dot{E}=kE\left(\frac{f+1}{fE^2+1}-1\right)
+\dot{E}=kE\left(\frac{\lambda+1}{\lambda E^2+1}-1\right)
 \\
-P=E\left(\frac{f+1}{fE^2+1}\right)
+P=E\left(\frac{\lambda+1}{\lambda E^2+1}\right)
 \\
-D=\frac{f+1}{fE^2+1}
+D=\frac{\lambda+1}{\lambda E^2+1}
 \end{cases}
 \end{equation}
 La funzione $\dot{E}$ si annulla nei seguenti punti:
@@ -261,16 +261,17 @@ La funzione $\dot{E}$ si annulla nei seguenti punti:
 \begin{displaymath}
 (E_{3},P_{3},D_{3})=(-1,1,-1)
 \end{displaymath}
-Si osservi che gli ultimi due punti non possono essere punti fissi per $f<0$ in quanto la funzione $\dot{E}$ non è definita in essi . Studiando il segno della derivata prima rispetto ad E funzione $F(E)=\dot{E}$ si hanno i seguenti risultati:
+Si osservi che gli ultimi due punti non possono essere punti fissi per $\lambda<0$ in quanto la funzione $\dot{E}$ non è definita in essi . Studiando il segno della derivata prima rispetto ad E funzione $F(E)=\dot{E}$ si hanno i seguenti risultati:
 \begin{displaymath}
-F'(E)=\frac{k(f+1)(fE^2+1)-kE(f+1)(2fE)}{(fE^2+1)^2}-k
+F'(E)=\frac{k(\lambda+1)(\lambda E^2+1)-kE(\lambda+1)(2\lambda
+  E)}{(\lambda E^2+1)^2}-k
 \end{displaymath}
 \begin{itemize}
-\item $(E_{1},P_{1},D_{1})=(0,0,0)$ è un punto fisso stabile per $f<0$;
-\item $(E_{2},P_{2},D_{2})=(1,1,1)$ è un punto fisso solo per $f>0$, dove è stabile;
-\item $(E_{3},P_{3},D_{3})=(-1,1,-1)$ è un punto fisso solo per $f>0$, dove è stabile.
+\item $(E_{1},P_{1},D_{1})=(0,0,0)$ è un punto fisso stabile per $\lambda<0$;
+\item $(E_{2},P_{2},D_{2})=(1,1,1)$ è un punto fisso solo per $\lambda>0$, dove è stabile;
+\item $(E_{3},P_{3},D_{3})=(-1,1,-1)$ è un punto fisso solo per $\lambda>0$, dove è stabile.
 \end{itemize}
-Dunque il sistema per $f$ negativi ha un attrattore nell'origine e due asintoti in  $(E_{2},P_{2},D_{2})=(1,1,1)$ e $(E_{3},P_{3},D_{3})=(-1,1,-1)$, mentre per f positivi ha un punto fisso instabile nell'origine e due attrattori in $(E_{2},P_{2},D_{2})=(1,1,1)$ e $(E_{3},P_{3},D_{3})=(-1,1,-1)$.
+Dunque il sistema per $\lambda$ negativi ha un attrattore nell'origine e due asintoti in  $(E_{2},P_{2},D_{2})=(1,1,1)$ e $(E_{3},P_{3},D_{3})=(-1,1,-1)$, mentre per $\lambda$ positivi ha un punto fisso instabile nell'origine e due attrattori in $(E_{2},P_{2},D_{2})=(1,1,1)$ e $(E_{3},P_{3},D_{3})=(-1,1,-1)$.
 \subsubsection{Soluzione Numerica}
 \section{Conclusioni}
 
