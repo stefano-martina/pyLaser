@@ -1,206 +1,246 @@
 #!/usr/bin/python3
 
-import scipy.integrate
 import numpy as np
-from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
+#import sys
+import scipy.integrate
+from mpl_toolkits.mplot3d import axes3d
 import matplotlib.animation as ani
-from pylab import *
+#from pylab import *
 
 #constants
-k = 100    #decay rate in laser cavity (beam trasmission) (>0)
-g1 = 1000   #decay rates of atomic polarization (>0)
-g2 = 1000   #decay rates for population inversion (>0)
-#l = 100    #pumping energy parameter (in R)
+kMin = 1.
+kMax = 1000.
+kStep = 0.1
+k = 5.    #decay rate in laser cavity (beam trasmission) (>0)
 
-lMin = -3  #pumping energy parameter (in R)
-lMax = 1000
-lSteps = 100
+g1Min = 1.
+g1Max = 1000.
+g1Step = 10.
+g1 = 1.   #decay rates of atomic polarization (>0)
 
-#startPoint = [80,80]
-graphLimitVar = 2
-graphLimit = [[-graphLimitVar, -graphLimitVar, -graphLimitVar],[graphLimitVar, graphLimitVar, graphLimitVar]]
-#graphLimit = [[-0.1, -2, -2],[0.1, 2, 2]]
+g2Min = 1.
+g2Max = 1000.
+g2Step = 10.
+g2 = 1.   #decay rates for population inversion (>0)
 
-quiverLen = 0.1
-meshPoints = [10, 10, 10]
+lMin = 11.  #pumping energy parameter (in R)
+lMax = 100.
+lStep = 0.01
+lInt = 10.
 
-#tMax = 0.5
-#integrationSteps = 1000
+l = lMin
 
-def makeMaxwell(k, g1, g2, l):
-    def ode(state, t=0.):
-        E = state[0]  # electric field
-        P = state[1]  # mean polarization
-        D = state[2]  # population inversion
+graphLimit = [[0.45, 0.45, 0.45],[0.55, 0.55, 0.55]]
+viewLimit = [[-3, -3, -7],[3, 3, 7]]
+#graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
+#viewLimit = [[-2, -2, -2],[2, 2, 2]]
+#graphLimit = [[-2, -2, -2],[2, 2, 2]]
+#viewLimit = [[-10, -10, -10],[10, 10, 10]]
 
-        nE = k*(P - E)
-        nP = g1*(E*D - P)
-        nD = g2*(l+1 - D - l*E*P)
-        
-        return [nE, nP, nD]    
-    return ode
+gridNum = 4
+
+tMin = 0.1
+tMax = 100.
+tStep = 0.1
+t = 100.  #integration time
+integrationSteps = 10000
+
+startPoints = []
+for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
+    for y in np.linspace(graphLimit[0][1], graphLimit[1][1], gridNum):
+        for z in np.linspace(graphLimit[0][2], graphLimit[1][2], gridNum):
+            startPoints.append([x,y,z])
+
+startPoints = [[0.5,0.5,0.5]]
 
 
-fig = plt.figure(figsize=(13, 7))
+#E = S[0]
+#P = S[1]
+#D = S[2]
+
+#full system
+#Ed = k(P-E)
+#Pd = g1(ED-P)
+#Dd = g2(l+1-D-lEP)
+maxwell = lambda k, g1, g2, l: lambda S, t:[k*(S[1]-S[0]),g1*(S[0]*S[2]-S[1]), g2*(l+1-S[2]-l*S[0]*S[1])]
+
+#jacobian
+#  -k       P       0
+#  g1D    -g1P     g1E
+# -g2lP   -g2lE     g2
+maxwellJac = lambda k, g1, g2, l: lambda S, t:[[-k, S[1], 0], [g1*S[2], -g1*S[1], g1*S[0]], [-g2*l*S[1], -g2*l*S[0], g2]]
+
+#adiabatic elimination system
+#Ed = kE((l+1)/(lE^2+1) -1)
+maxwellAdiabaticEl = lambda k, l: lambda E, t: k*l*(E-E**3)/(l*E*E+1)
+adiabaticP = lambda l: lambda E: E*(l+1)/(l*E*E+1)
+adiabaticD = lambda l: lambda E: (l+1)/(l*E*E+1)
+
+fig = plt.figure(figsize=(13, 7));
 ax = fig.gca(projection='3d')
-#ax3 = plt.subplot(111, xlim=(graphLimit[0][0], graphLimit[1][0]), ylim=(graphLimit[0][1], graphLimit[1][1]), zlim=(graphLimit[0][2],graphLimit[0][0]graphLimit[0][0]graphLimit[0][0]graphLimit[0][0] graphLimit[1][2]))
-#plt.title('Vector field')
+fig.canvas.set_window_title('Maxwell-Bloch')
+ax.set_title('Study of Maxwell-Bloch equations in E')
 ax.set_xlabel('$E$')
 ax.set_ylabel('$P$')
 ax.set_zlabel('$D$')
-plot([-1,0,1],[-1,0,1],[1,0,1], 'ro')
-#plot([0],[0],[0], 'ro')
+ax.set_xlim(viewLimit[0][0], viewLimit[1][0])
+ax.set_ylim(viewLimit[0][1], viewLimit[1][1])
+ax.set_zlim(viewLimit[0][2], viewLimit[1][2])
 
-xMesh = np.linspace(graphLimit[0][0], graphLimit[1][0],meshPoints[0])
-yMesh = np.linspace(graphLimit[0][1], graphLimit[1][1],meshPoints[1])
-zMesh = np.linspace(graphLimit[0][2], graphLimit[1][2],meshPoints[2])
-status = np.meshgrid( xMesh, yMesh, zMesh)
-endStatus = makeMaxwell(k, g1, g2, lMin)(status)
-q = ax.quiver(status[0], status[1], status[2], endStatus[0], endStatus[1], endStatus[2], length=quiverLen)
+line = []
+lineA = []
+for i in range(0, len(startPoints)):
+    line[len(line):len(line)], = [plt.plot([],[],[])]
+    lineA[len(lineA):len(lineA)], = [plt.plot([],[],[])]
 
+plt.figtext(0.7, 0.80, '$\dot{E} = \kappa(P-E)$')
+plt.figtext(0.7, 0.75, '$\dot{P} = \gamma_1(ED-P)$')
+plt.figtext(0.7, 0.70, '$\dot{D} = \gamma_2(\lambda+1-D-\lambda EP)$')
+kText = plt.figtext(0.7, 0.65, '')
+g1Text = plt.figtext(0.7, 0.60, '')
+g2Text = plt.figtext(0.7, 0.55, '')
+lText = plt.figtext(0.7, 0.50, '')
+tText = plt.figtext(0.7, 0.45, '')
 
-
-#diagr. biforc
-
-stabPoints0 = [[],[]]
-instabPoints0 = [[],[]]
-stabPoints1 = [[],[]]
-stabPointsm1 = [[],[]]
-instabPoints1 = [[],[]]
-instabPointsm1 = [[],[]]
-
-fig2 = plt.figure(figsize=(13, 7));
-
-for l in np.linspace(-10, 10, 1000):
-    if l > -k/(k-1) :
-        instabPoints0[0].append(l);
-        instabPoints0[1].append(0);
-    else:
-        stabPoints0[0].append(l);
-        stabPoints0[1].append(0);
-
-    if k > (l*(l+1))/(1-l):
-        instabPoints1[0].append(l);    
-        instabPoints1[1].append(1);
-     
-        instabPointsm1[0].append(l);
-        instabPointsm1[1].append(-1);    
-    else:
-        stabPoints1[0].append(l);    
-        stabPoints1[1].append(1);
-     
-        stabPointsm1[0].append(l);
-        stabPointsm1[1].append(-1);    
-
-plot(stabPoints0[0], stabPoints0[1], color='green')
-plot(stabPoints1[0], stabPoints1[1], color='green')
-plot(stabPointsm1[0], stabPointsm1[1], color='green')
-plot(instabPoints0[0], instabPoints0[1], color='red')
-plot(instabPoints1[0], instabPoints1[1], color='red')
-plot(instabPointsm1[0], instabPointsm1[1], color='red')
-
-ylim([-1.5,1.5])
-
-# fig.canvas.set_window_title('Milonni model')
-# plt.subplots_adjust(wspace=0.3, hspace=0.3)
-
-# ax1 = plt.subplot(241, xlim=(0, tMax), ylim=(0, graphLimit[0]))
-# plt.title('Evolution of $n$ from $'+str(startPoint[0])+'$')
-# plt.xlabel('$t$')
-# plt.ylabel('$n$')
-
-# line1, = ax1.plot([],[])
-
-# ax1b = plt.subplot(242, xlim=(0, tMax), ylim=(0, graphLimit[1]))
-# plt.title('Evolution of $N$ from $'+str(startPoint[1])+'$')
-# plt.xlabel('$t$')
-# plt.ylabel('$N$')
-
-# line1b, = ax1b.plot([],[])
-
-# ax2 = plt.subplot(222, xlim=(0, graphLimit[0]), ylim=(0, graphLimit[1]))
-# plt.title('Evolution of $(n,N)$ from $('+str(startPoint[0])+','+str(startPoint[1])+')$')
-# plt.xlabel('$n$')
-# plt.ylabel('$N$')
-
-# cumulativeEndStatus = [[],[]];
-# line2, = ax2.plot([],[])
-# line2b, = ax2.plot([],[], color='red')
-
-# ax3 = plt.subplot(223, xlim=(-150, graphLimit[0]), ylim=(-150, graphLimit[1]))
-# #plt.title('Vector field')
-# plt.xlabel('$n$')
-# plt.ylabel('$N$')
-
-# status = np.meshgrid( np.linspace(-150,graphLimit[0],20),np.linspace(-150,graphLimit[1],20) )
-# endStatus = makeMilonni(G, k, f, pMin)(status)
-# q = ax3.quiver(status[0], status[1], endStatus[0], endStatus[1])
-
-# GText = plt.figtext(0.6, 0.40, '')
-# kText = plt.figtext(0.6, 0.35, '')
-# fText = plt.figtext(0.6, 0.30, '')
-# pText = plt.figtext(0.6, 0.25, '')
-
-# plt.figtext(0.68, 0.31, '{', fontsize=40) #size='xx-large')
-# plt.figtext(0.7, 0.35, '$\dot{n} = GnN - kn$')
-# plt.figtext(0.7, 0.30, '$\dot{N} = -GnN - fN + p$')
-
-pause = False
+pause = True
+reverse = False
+adiabatic = False
 
 def onClick(event):
+#    print('button=%d, x=%d, y=%d, xdata=%f, ydata=%f'%(event.button, event.x, event.y, event.xdata, event.ydata))
+
     global pause
-    pause ^= True
+    global reverse
+    global adiabatic
+    global k
+    global g1
+    global g2
+    global l
+    global t
+    if event.key == ' ':
+        pause ^= True
     
-fig.canvas.mpl_connect('button_press_event', onClick)
+    if event.key == 'r':
+        reverse ^= True
+
+    if event.key == 'a':
+        adiabatic ^= True
+
+    if event.key == '9':
+        if k < kMax:
+            k = min(k + kStep, kMax)
+
+    if event.key == '8':
+        if k > kMin:
+            k = max(k - kStep, kMin)
+
+    if event.key == 'o':
+        if g1 < g1Max:
+            g1 = min(g1 + g1Step, g1Max)
+
+    if event.key == 'i':
+        if g1 > g1Min:
+            g1 = max(g1 - g1Step, g1Min)
+
+    if event.key == 'l':
+        if g2 < g2Max:
+            g2 = min(g2 + g2Step, g2Max)
+
+    if event.key == 'k':
+        if g2 > g2Min:
+            g2 = max(g2 - g2Step, g2Min)
+
+    if event.key == '.':
+        if l < lMax:
+            l = min(l + lStep, lMax)
+
+    if event.key == ',':
+        if l > lMin:
+            l = max(l - lStep, lMin)
+
+    if event.key == 'm':
+        if t < tMax:
+            t = min(t + tStep, tMax)
+
+    if event.key == 'n':
+        if t > tMin:
+            t = max(t - tStep, tMin)
+
+    if event.key == 'q':
+        exit()
+
+#fig.canvas.mpl_connect('button_press_event', onClick)
+fig.canvas.mpl_connect('key_press_event', onClick)
 
 def init():
-    return
+    for i in range(0, len(startPoints)):
+        line[i].set_data([], [])
+        line[i].set_3d_properties([])
+        lineA[i].set_data([], [])
+        lineA[i].set_3d_properties([])
+    kText.set_text('')
+    g1Text.set_text('')
+    g2Text.set_text('')
+    lText.set_text('')
+    tText.set_text('')
+    return line, kText, g1Text, g2Text, lText
 
-    # line1.set_data([], [])
-    # line1b.set_data([], [])
-    # line2.set_data([], [])
-    # line2b.set_data([], [])
-
-    # GText.set_text('')
-    # kText.set_text('')
-    # fText.set_text('')
-    # pText.set_text('')
-
-    # return line1, line1b, line2, line2b, GText, kText, fText, pText
-
-def step(k, g1, g2, lMin, lSteps):
-    def realStep(i):
-        if not pause:
-            endStatus = makeMaxwell(k, g1, g2, lMin+(i*lSteps))(status)
-            q.set_UVC(endStatus[0], endStatus[1], endStatus[2])
-            return q
-
+def makeGenerator(lMin, lMax, lStep):
+    def generator():
+        global l
+        if not reverse:
+            l = lMin
+        else:
+            l = lMax
             
-        #     if i==0:
-        #         cumulativeEndStatus[:] = [[],[]]
-        #     t = np.linspace(0.0, tMax, integrationSteps)
+        while l <= lMax+lStep and l >= lMin-lStep:
+            if not pause:
+                if not reverse:
+                    l = l + lStep
+                else:
+                    l = l - lStep
+            yield l
+    return generator
 
-        #     state = scipy.integrate.odeint(makeMilonni(G, k, f, pMin+(i*pSteps)), startPoint, t)
-        #     line1.set_data(t,state[:,0])
-        #     line1b.set_data(t,state[:,1])
-        #     cumulativeEndStatus[0].append(state[:,0][-1])
-        #     cumulativeEndStatus[1].append(state[:,1][-1])
-
-        #     line2.set_data(state[:,0], state[:,1])
-        #     line2b.set_data(cumulativeEndStatus[0], cumulativeEndStatus[1])
-
-        #     endStatus = makeMilonni(G, k, f, pMin+(i*pSteps))(status)
-        #     q.set_UVC(endStatus[0], endStatus[1])
-
-        #     GText.set_text('$G$ = %.1f' % G)
-        #     kText.set_text('$k$ = %.1f' % k)
-        #     fText.set_text('$f$ = %.1f' % f)
-        #     pText.set_text('$p$ = %d' % (pMin+(i*pSteps)))
+def step(l):
+    global adiabatic
+    global k
+    global g1
+    global g2
+    global t
+    ts = np.linspace(0.0, t, integrationSteps)
+    i = 0
+    for sp in startPoints:
+        state = scipy.integrate.odeint(maxwell(k, g1, g2, l), sp, ts, Dfun=maxwellJac(k, g1, g2, l))#, mxstep=1000)
         
-        # return line1, line1b, line2, line2b, cumulativeEndStatus, q, GText, kText, fText, pText
-    return realStep
+        line[i].set_data(state[:,0],state[:,1])
+        line[i].set_3d_properties(state[:,2])
 
-#anim = ani.FuncAnimation(fig, step(k, g1, g2, lMin, lSteps), init_func=init, frames=math.ceil((lMax-lMin)/lSteps), interval=10, blit=False) #, fargs=(q, status)
+        if adiabatic:
+            state = scipy.integrate.odeint(maxwellAdiabaticEl(k, l), sp[0], ts)#, mxstep=1000)
+            Es = state[:,0]
+
+            Ps = list(map(adiabaticP(l), Es))
+            Ds = list(map(adiabaticD(l), Es))
+            lineA[i].set_data(Es,Ps)
+            lineA[i].set_3d_properties(Ds)
+        else:
+            lineA[i].set_data([], [])
+            lineA[i].set_3d_properties([])
+
+        
+        i = i + 1
+            
+    kText.set_text('$\kappa$ = %.2f' % k)
+    g1Text.set_text('$\gamma_1$ = %.2f' % g1)
+    g2Text.set_text('$\gamma_2$ = %.2f' % g2)
+    lText.set_text('$\lambda$ = %.2f' % l)
+    tText.set_text('$t$ = %.2f' % t)
+    return line, kText, g1Text, g2Text, lText, tText
+
+
+anim = ani.FuncAnimation(fig, step, frames=makeGenerator(lMin, lMax, lStep), init_func=init, blit=False, repeat=True) #, interval=lInt
+
 plt.show()
 
