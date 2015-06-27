@@ -2,11 +2,9 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-#import sys
 import scipy.integrate
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.animation as ani
-#from pylab import *
 
 #constants
 kMin = 1.
@@ -82,7 +80,7 @@ adiabaticD = lambda l: lambda E: (l+1)/(l*E*E+1)
 fig = plt.figure(figsize=(13, 7));
 ax = fig.gca(projection='3d')
 fig.canvas.set_window_title('Maxwell-Bloch')
-ax.set_title('Study of Maxwell-Bloch equations in E')
+ax.set_title('Study of Maxwell-Bloch equations trajectories')
 ax.set_xlabel('$E$')
 ax.set_ylabel('$P$')
 ax.set_zlabel('$D$')
