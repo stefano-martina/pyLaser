@@ -29,9 +29,9 @@ lInt = 10.
 
 l = lMin
 
-center = 0.5
+singleStartPoint = [0.5, 0.5, 0.5]
 radius = 0.0001
-graphLimit = [[center-radius, center-radius, center-radius],[center+radius, center+radius, center+radius]]
+graphLimit = [[singleStartPoint[0]-radius, singleStartPoint[1]-radius, singleStartPoint[2]-radius],[singleStartPoint[0]+radius, singleStartPoint[1]+radius, singleStartPoint[2]+radius]]
 viewLimit = [[-3., -3., -7.],[3., 3., 7.]]
 #graphLimit = [[-0.5, -0.5, -0.5],[0.5, 0.5, 0.5]]
 #viewLimit = [[-2, -2, -2],[2, 2, 2]]
@@ -51,8 +51,6 @@ for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
     for y in np.linspace(graphLimit[0][1], graphLimit[1][1], gridNum):
         for z in np.linspace(graphLimit[0][2], graphLimit[1][2], gridNum):
             multipleStartPoints.append([x,y,z])
-
-singleStartPoint = [center,center,center]
 
 
 #E = S[0]
