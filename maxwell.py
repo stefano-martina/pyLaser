@@ -61,7 +61,7 @@ for x in np.linspace(graphLimit[0][0], graphLimit[1][0], gridNum):
 #Ed = k(P-E)
 #Pd = g1(ED-P)
 #Dd = g2(l+1-D-lEP)
-maxwell = lambda k, g1, g2, l: lambda S, t:[k*(S[1]-S[0]),g1*(S[0]*S[2]-S[1]), g2*(l+1-S[2]-l*S[0]*S[1])]
+maxwell = lambda k, g1, g2, l: lambda S, t:[k*(S[1]-S[0]),g1*(S[0]*S[2]-S[1]), g2*(l+1.-S[2]-l*S[0]*S[1])]
 
 #jacobian
 #  -k       P       0
@@ -71,9 +71,9 @@ maxwellJac = lambda k, g1, g2, l: lambda S, t:[[-k, S[1], 0], [g1*S[2], -g1*S[1]
 
 #adiabatic elimination system
 #Ed = kE((l+1)/(lE^2+1) -1)
-maxwellAdiabaticEl = lambda k, l: lambda E, t: k*l*(E-E**3)/(l*E*E+1)
-adiabaticP = lambda l: lambda E: E*(l+1)/(l*E*E+1)
-adiabaticD = lambda l: lambda E: (l+1)/(l*E*E+1)
+maxwellAdiabaticEl = lambda k, l: lambda E, t: k*l*(E-E**3)/(l*E*E+1.)
+adiabaticP = lambda l: lambda E: E*(l+1.)/(l*E*E+1.)
+adiabaticD = lambda l: lambda E: (l+1.)/(l*E*E+1.)
 
 fig = plt.figure(figsize=(13, 7));
 ax = fig.gca(projection='3d')
@@ -187,7 +187,7 @@ def init():
     g2Text.set_text('')
     lText.set_text('')
     tText.set_text('')
-    return line, kText, g1Text, g2Text, lText
+    return line, lineA, kText, g1Text, g2Text, lText
 
 def makeGenerator(lMin, lMax, lStep):
     def generator():
@@ -276,7 +276,7 @@ def step(l):
     g2Text.set_text('$\gamma_2$ = %.2f' % g2)
     lText.set_text('$\lambda$ = %.2f' % l)
     tText.set_text('$t$ = %.2f' % t)
-    return line, kText, g1Text, g2Text, lText, tText
+    return line, lineA, kText, g1Text, g2Text, lText, tText
 
 
 anim = ani.FuncAnimation(fig, step, frames=makeGenerator(lMin, lMax, lStep), init_func=init, blit=False, repeat=True) #, interval=lInt
