@@ -8,19 +8,21 @@
 								% TeX will automatically convert eps --> pdf in pdflatex		
 \usepackage{amssymb}
 \usepackage[latin1]{inputenc}
-     \usepackage{amsmath}	
-     \usepackage[italian]{babel}
-     \usepackage{geometry}
-     \usepackage{amsthm}
-     \usepackage{mathtools}
-     \usepackage{amsfonts}
-     \usepackage{braket}
-     \usepackage{wasysym} 
-     \usepackage{graphicx}
-     \usepackage[normal]{subfigure}
-     \usepackage[footnotesize,bf]{caption2}
-     \usepackage{biblatex}
-               \geometry{a4paper,top=4.5cm,bottom=3.5cm,left=3cm,right=3cm}   
+\usepackage{amsmath}	
+\usepackage[italian]{babel}
+\usepackage{geometry}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{braket}
+\usepackage{wasysym} 
+\usepackage{graphicx}
+\usepackage[normal]{subfigure}
+\usepackage[footnotesize,bf]{caption2}
+\usepackage{biblatex}
+\geometry{a4paper,top=4.5cm,bottom=3.5cm,left=3cm,right=3cm}   
+
+\usepackage[subnum]{cases}
 
 \title{La dinamica del Laser}
 \author{Granchi Nicoletta e Martina Stefano}
@@ -210,7 +212,7 @@ Il linguaggio usato per lo svolgimento delle simulazioni \`e
     numero di fotoni nel sistema, $N$ il numero di atomi eccitati}.
 \subsection{Modello con Equazioni di Maxwell Bloch}
 Le equazioni di Maxwell Bloch descrivono la dinamica di un sistema quantistico a due stati interagente con il modo elettromagnetico di un risonatore ottico; sono analoghe, ma non tutte equivalenti, alle equazioni di Bloch che descrivono il momento magnetico nucleare in un campo elettromagnetico. Si tratta di un sistema di tre equazioni al primo ordine per il campo elettrico in un modo di singola cavità longitudinale, ricavato a partire dalle equazioni di Maxwell usando approssimazioni semiclassiche per variabili quantistiche. La non linearità deriva dal fatto che il sistema oscilla tra almeno due stati discreti di energia. Le equazioni sono risolte per la \textit{densità di inversione di popolazione} $D(t)$ e per la \textit{densità media di polarizzazione} $P(t)$, indotta dal campo elettrico $E(t)$:
-\begin{equation}
+\begin{equation}\label{fun:maxwell}
 \begin{cases}
 \dot{E}=k(P-E)
 \\
@@ -242,37 +244,68 @@ Assumendo che $\gamma_{1},\gamma_{2}>>k$, si elimina adiabaticamente $\dot{P}$ e
 \end{cases}
 \end{equation}
 Esprimendo $P$ e $D$ in funzione di $E$ si ottiene:
-\begin{equation}
-\begin{cases}
-\dot{E}=kE\left(\frac{\lambda+1}{\lambda E^2+1}-1\right)
-\\
-P=E\left(\frac{\lambda+1}{\lambda E^2+1}\right)
-\\
-D=\frac{\lambda+1}{\lambda E^2+1}
-\end{cases}
-\end{equation}
-La funzione $\dot{E}$ si annulla nei seguenti punti:
+%\begin{equation}
+\begin{numcases}{}
+  \dot{E}=kE\left(\frac{\lambda+1}{\lambda E^2+1}-1\right)
+  =k\lambda\left(\frac{E-E^3}{\lambda E^2+1}\right) \label{fun:adiabaticE}
+  \\
+  P=E\left(\frac{\lambda+1}{\lambda E^2+1}\right)
+  \\
+  D=\frac{\lambda+1}{\lambda E^2+1}
+\end{numcases}
+%\end{equation}
+La funzione~\ref{fun:adiabaticE} si annulla in $E_1=0$, $E_2=1$ e $E_3=-1$,
+quindi il sistema ha punti fissi:
+\begin{eqnarray*}
+E^*_1&=&(E_{1},P_{1},D_{1})=(0,0,0)\\
+E^*_2&=&(E_{2},P_{2},D_{2})=(1,1,1)\\
+E^*_3&=&(E_{3},P_{3},D_{3})=(-1,1,-1)
+\end{eqnarray*}
+Si osservi inoltre che per $\lambda<0$ la funzione non è continua per $E$
+uguale a:
+\begin{eqnarray*}
+E^a_1&=&1/\sqrt{-\lambda}\\
+E^a_2&=&-1/\sqrt{-\lambda}  
+\end{eqnarray*}
+in corrispondenza di
+tali punti \`e presente un asintoto verticale.
+
+Studiando il segno
+della derivata prima rispetto ad $E$ della funzione~\eqref{fun:adiabaticE}:
 \begin{displaymath}
-(E_{1},P_{1},D_{1})=(0,0,0)
-\end{displaymath}
-\begin{displaymath}
-(E_{2},P_{2},D_{2})=(1,1,1)
-\end{displaymath}
-\begin{displaymath}
-(E_{3},P_{3},D_{3})=(-1,1,-1)
-\end{displaymath}
-Si osservi che gli ultimi due punti non possono essere punti fissi per $\lambda<0$ in quanto la funzione $\dot{E}$ non è definita in essi . Studiando il segno della derivata prima rispetto ad E funzione $F(E)=\dot{E}$ si hanno i seguenti risultati:
-\begin{displaymath}
-F'(E)=\frac{k(\lambda+1)(\lambda E^2+1)-kE(\lambda+1)(2\lambda
+\frac{d}{dE}[\dot{E}]=\frac{k(\lambda+1)(\lambda E^2+1)-kE(\lambda+1)(2\lambda
   E)}{(\lambda E^2+1)^2}-k
 \end{displaymath}
+si hanno i seguenti risultati per i punti fissi:
 \begin{itemize}
-\item $(E_{1},P_{1},D_{1})=(0,0,0)$ è un punto fisso stabile per $\lambda<0$;
-\item $(E_{2},P_{2},D_{2})=(1,1,1)$ è un punto fisso solo per $\lambda>0$, dove è stabile;
-\item $(E_{3},P_{3},D_{3})=(-1,1,-1)$ è un punto fisso solo per $\lambda>0$, dove è stabile.
+\item $E^*_1$ è un punto fisso stabile per $\lambda<0$, instabile per $\lambda>0$;
+\item $E^*_2$ è un punto fisso stabile per $\lambda<-1$, instabile per
+  $-1<\lambda<0$, e di nuovo stabile per $\lambda>0$;
+\item $E^*_3$ è un punto fisso stabile per $\lambda<-1$, instabile per
+  $-1<\lambda<0$, e di nuovo stabile per $\lambda>0$;
 \end{itemize}
-Dunque il sistema per $\lambda$ negativi ha un attrattore nell'origine e due asintoti in  $(E_{2},P_{2},D_{2})=(1,1,1)$ e $(E_{3},P_{3},D_{3})=(-1,1,-1)$, mentre per $\lambda$ positivi ha un punto fisso instabile nell'origine e due attrattori in $(E_{2},P_{2},D_{2})=(1,1,1)$ e $(E_{3},P_{3},D_{3})=(-1,1,-1)$.
+inoltre, anche se per $\lambda<0$ sia la
+funzione~\eqref{fun:adiabaticE} che la sua derivata non
+sono definite in $E^a_1$ e $E^a_2$, studiando l'andamento della funzione intorno agli asintoti si
+può dedurre che
+\begin{itemize}
+\item $E^a_1$ \`e repulsivo per $\lambda<-1$ e attrattivo per
+  $-1<\lambda<0$ (e non esiste per $\lambda>0$)
+\item $E^a_2$ \`e repulsivo per $\lambda<-1$ e attrattivo per
+  $-1<\lambda<0$ (e non esiste per $\lambda>0$)
+\end{itemize}
 \subsubsection{Soluzione Numerica}
+Per lo studio delle equazioni di Maxwell-Bloch~\eqref{fun:maxwell} sono stati realizzati
+tre scripts:
+\begin{description}
+\item[maxwellBifurcationAdiabatic.py] \`e utile per l'analisi della
+  biforcazione nel caso venga usata l'eliminazione adiabatica;
+\item[maxwellVectField.py] permette di visualizzare il campo
+  vettoriale indotto dalle equazioni~\eqref{fun:maxwell};
+\item[maxwell.py] \`e lo script più complesso e permette di
+  visualizzare le traiettorie nello spazio e confrontarle con quelle
+  semplificate con l'eliminazione adiabatica.
+\end{description}
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_adia_1.pdf}
