@@ -212,7 +212,7 @@ Il linguaggio usato per lo svolgimento delle simulazioni \`e
     numero di fotoni nel sistema, $N$ il numero di atomi eccitati}.
 \subsection{Modello con Equazioni di Maxwell Bloch}
 Le equazioni di Maxwell Bloch descrivono la dinamica di un sistema quantistico a due stati interagente con il modo elettromagnetico di un risonatore ottico; sono analoghe, ma non tutte equivalenti, alle equazioni di Bloch che descrivono il momento magnetico nucleare in un campo elettromagnetico. Si tratta di un sistema di tre equazioni al primo ordine per il campo elettrico in un modo di singola cavità longitudinale, ricavato a partire dalle equazioni di Maxwell usando approssimazioni semiclassiche per variabili quantistiche. La non linearità deriva dal fatto che il sistema oscilla tra almeno due stati discreti di energia. Le equazioni sono risolte per la \textit{densità di inversione di popolazione} $D(t)$ e per la \textit{densità media di polarizzazione} $P(t)$, indotta dal campo elettrico $E(t)$:
-\begin{equation}\label{fun:maxwell}
+\begin{equation}\label{eq:maxwell}
 \begin{cases}
 \dot{E}=k(P-E)
 \\
@@ -247,14 +247,14 @@ Esprimendo $P$ e $D$ in funzione di $E$ si ottiene:
 %\begin{equation}
 \begin{numcases}{}
   \dot{E}=kE\left(\frac{\lambda+1}{\lambda E^2+1}-1\right)
-  =k\lambda\left(\frac{E-E^3}{\lambda E^2+1}\right) \label{fun:adiabaticE}
+  =k\lambda\left(\frac{E-E^3}{\lambda E^2+1}\right) \label{eq:adiabaticE}
   \\
   P=E\left(\frac{\lambda+1}{\lambda E^2+1}\right)
   \\
   D=\frac{\lambda+1}{\lambda E^2+1}
 \end{numcases}
 %\end{equation}
-La funzione~\ref{fun:adiabaticE} si annulla in $E_1=0$, $E_2=1$ e $E_3=-1$,
+La funzione~\ref{eq:adiabaticE} si annulla in $E_1=0$, $E_2=1$ e $E_3=-1$,
 quindi il sistema ha punti fissi:
 \begin{eqnarray*}
 E^*_1&=&(E_{1},P_{1},D_{1})=(0,0,0)\\
@@ -271,11 +271,11 @@ in corrispondenza di
 tali punti \`e presente un asintoto verticale.
 
 Studiando il segno
-della derivata prima rispetto ad $E$ della funzione~\eqref{fun:adiabaticE}:
-\begin{displaymath}
+della derivata prima rispetto ad $E$ della funzione~\eqref{eq:adiabaticE}:
+\begin{equation}\label{eq:adiabaticEDer}
 \frac{d}{dE}[\dot{E}]=\frac{k(\lambda+1)(\lambda E^2+1)-kE(\lambda+1)(2\lambda
   E)}{(\lambda E^2+1)^2}-k
-\end{displaymath}
+\end{equation}
 si hanno i seguenti risultati per i punti fissi:
 \begin{itemize}
 \item $E^*_1$ è un punto fisso stabile per $\lambda<0$, instabile per $\lambda>0$;
@@ -285,7 +285,7 @@ si hanno i seguenti risultati per i punti fissi:
   $-1<\lambda<0$, e di nuovo stabile per $\lambda>0$;
 \end{itemize}
 inoltre, anche se per $\lambda<0$ sia la
-funzione~\eqref{fun:adiabaticE} che la sua derivata non
+funzione~\eqref{eq:adiabaticE} che la sua derivata non
 sono definite in $E^a_1$ e $E^a_2$, studiando l'andamento della funzione intorno agli asintoti si
 può dedurre che
 \begin{itemize}
@@ -295,17 +295,17 @@ può dedurre che
   $-1<\lambda<0$ (e non esiste per $\lambda>0$)
 \end{itemize}
 \subsubsection{Soluzione Numerica}
-Per lo studio delle equazioni di Maxwell-Bloch~\eqref{fun:maxwell} sono stati realizzati
+Per lo studio delle equazioni di Maxwell-Bloch~\eqref{eq:maxwell} sono stati realizzati
 tre scripts:
-\begin{description}
-\item[maxwellBifurcationAdiabatic.py] \`e utile per l'analisi della
-  biforcazione nel caso venga usata l'eliminazione adiabatica;
-\item[maxwellVectField.py] permette di visualizzare il campo
-  vettoriale indotto dalle equazioni~\eqref{fun:maxwell};
-\item[maxwell.py] \`e lo script più complesso e permette di
-  visualizzare le traiettorie nello spazio e confrontarle con quelle
-  semplificate con l'eliminazione adiabatica.
-\end{description}
+\begin{itemize}
+\item maxwellBifurcationAdiabatic.py
+\item maxwellVectField.py
+\item maxwell.py
+\end{itemize}
+Come nei casi precedenti, questi script sono stati realizzati in
+Python.
+
+\paragraph{maxwellBifurcationAdiabatic.py}
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_adia_1.pdf}
@@ -326,14 +326,51 @@ tre scripts:
   \caption{Modello Maxwell, eliminazione adiabatica, $\lambda>0$}
   \label{fig:maxwellAdia3}
 \end{figure}
+\`e utile per l'analisi della
+biforcazione nel caso venga usata l'eliminazione
+adiabatica.
 
+L'esecuzione mostra una animazione in due plot che \`e possibile
+mettere in pausa cliccando su qualsiasi punto della finestra. il plot
+superiore \`e il grafico dell'andamento della
+funzione~\eqref{eq:adiabaticE} di $\dot{E}$ rispetto ad $E$ dopo l'eliminazione
+adiabatica, gli zeri di questa funzione indicano i punti fissi del
+sistema. In questo plot \`e disegnata anche la
+derivata~\eqref{eq:adiabaticEDer} per lo studio della stabilità  e
+sono evidenziati i punti fissi, in verde se stabili e in rosso se instabili,
+e gli asintoti della funzione.
+
+Il plot inferiore mostra l'andamento della stabilit\`a dei punti fissi
+al variare del parametro $\lambda$, viene indicato in verde quando il
+punto fisso \`e stabile, e in rosso quando \`e instabile. Vengono
+evidenziati anche i due asintoti come punti fissi, con la stabilit\`a
+dedotta dall'andamento della funzione.
+
+in figura~\ref{fig:maxwellAdia1} \`e mostrato uno screenshot
+dell'animazione con $\lambda<-1$, in figura~\ref{fig:maxwellAdia2} con
+$-1<\lambda<0$ e in figura~\ref{fig:maxwellAdia3} con $\lambda>0$. Si
+nota che la dinamica della funzione \`e compatibile  con i risultati
+della soluzione
+analitica, anche se in realt\`a il plot pi\`u significativo \`e quello
+superiore, in quanto quello inferiore viene costruito ad hoc partendo
+dai risultati ottenuti.
+
+\paragraph{maxwellVectField.py}
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_vf.pdf}
   \caption{Modello Maxwell, campo vettoriale indotto}
   \label{fig:maxwellVf}
 \end{figure}
+permette di visualizzare il campo
+vettoriale indotto dalle equazioni~\eqref{eq:maxwell} e vengono
+evidenziati in rosso i tre punti fissi $E^*_1$, $E^*_2$ e
+$E^*_3$. Questo script non fornisce grande interattivit\`a, ma \`e
+possibile ruotare lo spazio e variare i parametri del sistema. In
+figura~\ref{fig:maxwellVf} \`e visibile uno screenshoot dello script
+in esecuzione.
 
+\paragraph{maxwell.py}
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_1.pdf}
@@ -404,7 +441,9 @@ tre scripts:
   \label{fig:maxwell10}
 \end{figure}
 
-
+\`e lo script più complesso e completo, permette di
+visualizzare le traiettorie nello spazio e confrontarle con le corrispondenti
+semplificate con l'eliminazione adiabatica.
 
 
 \section{Conclusioni}
