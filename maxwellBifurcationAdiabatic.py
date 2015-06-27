@@ -33,7 +33,7 @@ plt.ylabel('$\dot{E}$')
 plt.axhline(0, color='black')
 
 line, = ax1.plot([],[], label='$\dot{E} = \kappa\lambda(E-E^3)/(\lambda E^2+1)$')
-lined, = ax1.plot([],[], label='$d/dE [\ \kappa\lambda(E-E^3)/(\lambda E^2+1)\ ]$')
+lined, = ax1.plot([],[], label='$\\frac{d}{dE} [\ \kappa\lambda(E-E^3)/(\lambda E^2+1)\ ]$')
 
 ax1.legend(handles=[line, lined])
 
