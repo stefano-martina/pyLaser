@@ -378,11 +378,11 @@ L'applicazione presenta un unico plot in tre dimensioni, sulla destra
 sistema~\eqref{eq:maxwell} e i valori attuali dei parametri. \`E
 possibile interagire con il programma variando i parametri:
 \begin{itemize}
-\item $\kappa$ con i tasti \texttt{8} e \texttt{9};
-\item $\gamma_1$ con i tasti \texttt{i} e \texttt{o};
-\item $\gamma_2$ con i tasti \texttt{k} e \texttt{l};
-\item $\lambda$ con i tasti \texttt{,} e \texttt{.};
-\item $t$ con i tasti \texttt{n} e \texttt{m}.
+\item $\kappa$ con i tasti \texttt{1} e \texttt{2};
+\item $\gamma_1$ con i tasti \texttt{3} e \texttt{4};
+\item $\gamma_2$ con i tasti \texttt{5} e \texttt{6};
+\item $\lambda$ con i tasti \texttt{7} e \texttt{8};
+\item $t$ con i tasti \texttt{9} e \texttt{0}.
 \end{itemize}
 Inoltre \`e possibile attivare e disattivare altre funzioni:
 \begin{itemize}
@@ -391,6 +391,7 @@ Inoltre \`e possibile attivare e disattivare altre funzioni:
   l'eliminazione adiabatica;
 \item \texttt{z} traccia singola o multitraccia.
 \end{itemize}
+Infine premendo \texttt{q} si termina lo script.
 
 Con questo strumento \`e possibile esplorare lo spazio degli stati e
 vedere come evolvono le tracce a partire da punti di partenza a
@@ -417,21 +418,24 @@ punti fissi stabili in $E=1$ ed $E=-1$ per $\lambda>0$.
 In figura~\ref{fig:maxwell3} e in figura~\ref{fig:maxwell4} viene
 usata la funzionalità che permette di visualizzare una seconda traccia
 corrispondente a quella data dal sistema effettuando l'eliminazione
-adiabatica. 
+adiabatica. Si nota che se sussistono le condizioni per l'eliminazione
+adiabatica la traiettoria si adagia rapidamente su quella indicata
+dall'eliminazione adiabatica.
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_3.pdf}
   \caption{Modello Maxwell, confronto con eliminazione adiabatica}
   \label{fig:maxwell3}
 \end{figure}
-
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_4.pdf}
   \caption{Modello Maxwell, confronto con eliminazione adiabatica}
   \label{fig:maxwell4}
 \end{figure}
-
+Se invece non sussistono le condizioni dei parametri, ad esempio
+impostando $\zeta > \gamma_1$ e $\zeta > \gamma_2$, la correlazione
+tra le due traiettorie \`e povera come in figura~\ref{fig:maxwell5}.
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_5.pdf}
@@ -440,38 +444,49 @@ adiabatica.
   \label{fig:maxwell5}
 \end{figure}
 
+Per alcuni valori dei parametri si nota che le traiettorie possono
+spiraleggiare verso il punto fisso come in figura~\ref{fig:maxwell6},
+e che possono evolvere in cicli limite come quello di
+figura~\ref{fig:maxwell7} e si pu\`o notare l'insorgere del caos e di
+attrattori come nelle figure~\ref{fig:maxwell8}, \ref{fig:maxwell9} e
+\ref{fig:maxwell10}. In particolare nelle ultime due figure \`e
+possibile avere una dimostrazione del comportamento caotico in quanto
+sono visualizzate le traiettorie di sei tracce che hanno punti di
+partenza che differiscono di poco e che dopo un certo tempo hanno
+posizioni molto differenti.
+
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_6.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, spirale}
   \label{fig:maxwell6}
 \end{figure}
 
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_7.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, ciclo limite}
   \label{fig:maxwell7}
 \end{figure}
 
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_8.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, attrattore}
   \label{fig:maxwell8}
 \end{figure}
 
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_9.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, caos}
   \label{fig:maxwell9}
 \end{figure}
 
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_10.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, caos}
   \label{fig:maxwell10}
 \end{figure}
 
