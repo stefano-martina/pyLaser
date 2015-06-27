@@ -306,26 +306,6 @@ Come nei casi precedenti, questi script sono stati realizzati in
 Python.
 
 \paragraph{maxwellBifurcationAdiabatic.py}
-\begin{figure}[\positioning]
-  \centering
-  \includegraphics[width=\textwidth]{maxwell_adia_1.pdf}
-  \caption{Modello Maxwell, eliminazione adiabatica, $\lambda<-1$}
-  \label{fig:maxwellAdia1}
-\end{figure}
-
-\begin{figure}[\positioning]
-  \centering
-  \includegraphics[width=\textwidth]{maxwell_adia_2.pdf}
-  \caption{Modello Maxwell, eliminazione adiabatica, $-1<\lambda<0$}
-  \label{fig:maxwellAdia2}
-\end{figure}
-
-\begin{figure}[\positioning]
-  \centering
-  \includegraphics[width=\textwidth]{maxwell_adia_3.pdf}
-  \caption{Modello Maxwell, eliminazione adiabatica, $\lambda>0$}
-  \label{fig:maxwellAdia3}
-\end{figure}
 \`e utile per l'analisi della
 biforcazione nel caso venga usata l'eliminazione
 adiabatica.
@@ -354,14 +334,26 @@ della soluzione
 analitica, anche se in realt\`a il plot pi\`u significativo \`e quello
 superiore, in quanto quello inferiore viene costruito ad hoc partendo
 dai risultati ottenuti.
-
-\paragraph{maxwellVectField.py}
 \begin{figure}[\positioning]
   \centering
-  \includegraphics[width=\textwidth]{maxwell_vf.pdf}
-  \caption{Modello Maxwell, campo vettoriale indotto}
-  \label{fig:maxwellVf}
+  \includegraphics[width=\textwidth]{maxwell_adia_1.pdf}
+  \caption{Modello Maxwell, eliminazione adiabatica, $\lambda<-1$}
+  \label{fig:maxwellAdia1}
 \end{figure}
+\begin{figure}[\positioning]
+  \centering
+  \includegraphics[width=\textwidth]{maxwell_adia_2.pdf}
+  \caption{Modello Maxwell, eliminazione adiabatica, $-1<\lambda<0$}
+  \label{fig:maxwellAdia2}
+\end{figure}
+\begin{figure}[\positioning]
+  \centering
+  \includegraphics[width=\textwidth]{maxwell_adia_3.pdf}
+  \caption{Modello Maxwell, eliminazione adiabatica, $\lambda>0$}
+  \label{fig:maxwellAdia3}
+\end{figure}
+
+\paragraph{maxwellVectField.py}
 permette di visualizzare il campo
 vettoriale indotto dalle equazioni~\eqref{eq:maxwell} e vengono
 evidenziati in rosso i tre punti fissi $E^*_1$, $E^*_2$ e
@@ -369,40 +361,82 @@ $E^*_3$. Questo script non fornisce grande interattivit\`a, ma \`e
 possibile ruotare lo spazio e variare i parametri del sistema. In
 figura~\ref{fig:maxwellVf} \`e visibile uno screenshoot dello script
 in esecuzione.
+\begin{figure}[\positioning]
+  \centering
+  \includegraphics[width=\textwidth]{maxwell_vf.pdf}
+  \caption{Modello Maxwell, campo vettoriale indotto}
+  \label{fig:maxwellVf}
+\end{figure}
 
 \paragraph{maxwell.py}
+\`e lo script più complesso e completo, permette di
+visualizzare le traiettorie nello spazio e confrontarle con le corrispondenti
+semplificate con l'eliminazione adiabatica.
+
+L'applicazione presenta un unico plot in tre dimensioni, sulla destra
+\`e presente un riepilogo delle tre equazioni che compongono il
+sistema~\eqref{eq:maxwell} e i valori attuali dei parametri. \`E
+possibile interagire con il programma variando i parametri:
+\begin{itemize}
+\item $\kappa$ con i tasti \texttt{8} e \texttt{9};
+\item $\gamma_1$ con i tasti \texttt{i} e \texttt{o};
+\item $\gamma_2$ con i tasti \texttt{k} e \texttt{l};
+\item $\lambda$ con i tasti \texttt{,} e \texttt{.};
+\item $t$ con i tasti \texttt{n} e \texttt{m}.
+\end{itemize}
+Inoltre \`e possibile attivare e disattivare altre funzioni:
+\begin{itemize}
+\item \texttt{spazio} l'animazione al variare di $\lambda$;
+\item \texttt{a} la visualizzazione della corrispondente traccia con
+  l'eliminazione adiabatica;
+\item \texttt{z} traccia singola o multitraccia.
+\end{itemize}
+
+Con questo strumento \`e possibile esplorare lo spazio degli stati e
+vedere come evolvono le tracce a partire da punti di partenza a
+piacere, al variare dei parametri.
+In figura~\ref{fig:maxwell1} e in figura~\ref{fig:maxwell2} \`e
+possibile vedere come, al ricrearsi le condizioni per l'eliminazione
+adiabatica\footnote{$\gamma_1>>\kappa$ e $\gamma_2>>\kappa$}, si
+osservino dei comportamenti compatibili con i risultati dell'analisi
+analitica. Ossia un punto fisso stabile in $E=0$ per $\lambda<0$ e due
+punti fissi stabili in $E=1$ ed $E=-1$ per $\lambda>0$.
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_1.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, punto fisso stabile ad $E=0$}
   \label{fig:maxwell1}
 \end{figure}
-
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_2.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, punti fissi stabili ad $E=-1$ e $E=1$}
   \label{fig:maxwell2}
 \end{figure}
 
+In figura~\ref{fig:maxwell3} e in figura~\ref{fig:maxwell4} viene
+usata la funzionalità che permette di visualizzare una seconda traccia
+corrispondente a quella data dal sistema effettuando l'eliminazione
+adiabatica. 
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_3.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, confronto con eliminazione adiabatica}
   \label{fig:maxwell3}
 \end{figure}
 
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_4.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, confronto con eliminazione adiabatica}
   \label{fig:maxwell4}
 \end{figure}
 
 \begin{figure}[\positioning]
   \centering
   \includegraphics[width=\textwidth]{maxwell_5.pdf}
-  \caption{Modello Maxwell}
+  \caption{Modello Maxwell, confronto con eliminazione adiabatica per
+    condizioni errate}
   \label{fig:maxwell5}
 \end{figure}
 
@@ -440,10 +474,6 @@ in esecuzione.
   \caption{Modello Maxwell}
   \label{fig:maxwell10}
 \end{figure}
-
-\`e lo script più complesso e completo, permette di
-visualizzare le traiettorie nello spazio e confrontarle con le corrispondenti
-semplificate con l'eliminazione adiabatica.
 
 
 \section{Conclusioni}
