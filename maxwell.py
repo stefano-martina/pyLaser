@@ -121,56 +121,56 @@ def onClick(event):
     if event.key == ' ':
         pause ^= True
     
-    if event.key == 'r':
+    elif event.key == 'r':
         reverse ^= True
 
-    if event.key == 'a':
+    elif event.key == 'a':
         adiabatic ^= True
 
-    if event.key == 'z':
+    elif event.key == 'z':
         single ^= True
 
-    if event.key == '9':
+    elif event.key == '2':
         if k < kMax:
             k = min(k + kStep, kMax)
 
-    if event.key == '8':
+    elif event.key == '1':
         if k > kMin:
             k = max(k - kStep, kMin)
 
-    if event.key == 'o':
+    elif event.key == '4':
         if g1 < g1Max:
             g1 = min(g1 + g1Step, g1Max)
 
-    if event.key == 'i':
+    elif event.key == '3':
         if g1 > g1Min:
             g1 = max(g1 - g1Step, g1Min)
 
-    if event.key == 'l':
+    elif event.key == '6':
         if g2 < g2Max:
             g2 = min(g2 + g2Step, g2Max)
 
-    if event.key == 'k':
+    elif event.key == '5':
         if g2 > g2Min:
             g2 = max(g2 - g2Step, g2Min)
 
-    if event.key == '.':
+    elif event.key == '8':
         if l < lMax:
             l = min(l + lStep, lMax)
 
-    if event.key == ',':
+    elif event.key == '7':
         if l > lMin:
             l = max(l - lStep, lMin)
 
-    if event.key == 'm':
+    elif event.key == '0':
         if t < tMax:
             t = min(t + tStep, tMax)
 
-    if event.key == 'n':
+    elif event.key == '9':
         if t > tMin:
             t = max(t - tStep, tMin)
 
-    if event.key == 'q':
+    elif event.key == 'q':
         exit()
 
 #fig.canvas.mpl_connect('button_press_event', onClick)
